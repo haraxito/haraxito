@@ -37,14 +37,14 @@ export async function POST(request: Request) {
       .from("rendez_vous")
       .insert([
         {
-          nom,
-          email,
-          telephone,
-          vehicule,
+          client_nom: nom,
+          client_email: email || null,
+          client_telephone: telephone,
+          vehicule_infos: vehicule,
           type_service: typeService,
-          adresse: adresse || null,
-          message: message || null,
-          statut: "nouveau",
+          adresse_intervention: typeService === 'DOMICILE' ? adresse : null,
+          date_souhaitee: preferredDate || new Date().toISOString().split('T')[0],
+          statut: "Nouveau",
         },
       ])
       .select()
