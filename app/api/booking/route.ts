@@ -42,8 +42,9 @@ export async function POST(request: Request) {
           client_telephone: telephone,
           vehicule_infos: vehicule,
           type_service: typeService,
-          adresse_intervention: typeService === 'DOMICILE' ? adresse : null,
-          date_souhaitee: preferredDate || new Date().toISOString().split('T')[0],
+          adresse_intervention: typeService === "DOMICILE" ? adresse : null,
+          date_souhaitee:
+            preferredDate || new Date().toISOString().split("T")[0],
           statut: "Nouveau",
         },
       ])
