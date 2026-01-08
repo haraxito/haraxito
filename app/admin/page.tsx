@@ -1,4 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabaseClient";
+import { isAuthenticated } from "@/lib/auth";
+import { redirect } from "next/navigation";
 import {
   Truck,
   Building2,
@@ -11,8 +13,10 @@ import {
   Shield,
   Phone,
   Pencil,
+  LogOut,
 } from "lucide-react";
 import Link from "next/link";
+import LogoutButton from "./LogoutButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -31,6 +35,12 @@ type RendezVous = {
 };
 
 export default async function AdminPage() {
+  // Check authentication - redirect to login if not authenticated
+  const authenticated = await isAuthenticated();
+  if (!authenticated) {
+    redirect("/admin/login");
+  }
+
   const admin = supabaseAdmin();
   const { data, error } = await admin
     .from("rendez_vous")
@@ -67,15 +77,17 @@ export default async function AdminPage() {
       <div className="sticky top-0 z-40 bg-primary text-white shadow-md -mx-4 md:-mx-0">
         <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold tracking-tight">AutoGlass Pro</h1>
+            <h1 className="text-xl font-bold tracking-tight">Parebrise Instant</h1>
           </div>
           <div className="flex items-center gap-2">
             <Link
               href="/admin"
               className="flex items-center justify-center p-2 rounded-full hover:bg-white/10"
+              title="Rafraîchir"
             >
               <RefreshCw className="w-5 h-5" />
             </Link>
+            <LogoutButton />
           </div>
         </div>
       </div>
