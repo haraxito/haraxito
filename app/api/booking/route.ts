@@ -1,15 +1,30 @@
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
-import { sendBookingEmails } from "@/lib/resend";
+import {
+  supabaseAdmin,
+  envValidation,
+  isSupabaseConfigured,
+} from "@/lib/supabaseClient";
+import { sendBookingEmails, isResendConfigured } from "@/lib/resend";
 
-// Initialize Supabase client with service role for server-side operations
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+// Validate environment on module load
+const isEnvValid = envValidation.valid;
 
 export async function POST(request: Request) {
   try {
+    // Check if Supabase is configured
+    if (!isSupabaseConfigured()) {
+      console.error("Supabase not configured:", envValidation.errors);
+      return NextResponse.json(
+        {
+          error: "Configuration error",
+          details:
+            "Database connection not configured. Please check environment variables.",
+          errors: envValidation.errors,
+        },
+        { status: 500 }
+      );
+    }
+
     const body = await request.json();
 
     const {
@@ -32,8 +47,24 @@ export async function POST(request: Request) {
       );
     }
 
-    // Insert into Supabase
-    const { data: booking, error: dbError } = await supabase
+    // Validate service type
+    if (!["DOMICILE", "ATELIER"].includes(typeService)) {
+      return NextResponse.json(
+        { error: "Type de service invalide" },
+        { status: 400 }
+      );
+    }
+
+    // Validate required address for DOMICILE service
+    if (typeService === "DOMICILE" && !adresse) {
+      return NextResponse.json(
+        { error: "L'adresse est requise pour le service à domicile" },
+        { status: 400 }
+      );
+    }
+
+    // Insert into Supabase using admin client
+    const { data: booking, error: dbError } = await supabaseAdmin()
       .from("rendez_vous")
       .insert([
         {
@@ -54,29 +85,36 @@ export async function POST(request: Request) {
     if (dbError) {
       console.error("Database error:", dbError);
       return NextResponse.json(
-        { error: "Erreur lors de l'enregistrement" },
+        { error: "Erreur lors de l'enregistrement", details: dbError.message },
         { status: 500 }
       );
     }
 
-    // Send confirmation emails via Resend
-    try {
-      const emailResults = await sendBookingEmails({
-        clientName: nom,
-        clientEmail: email,
-        clientPhone: telephone,
-        vehicleInfo: vehicule,
-        damageType: damageType || "other",
-        serviceType: typeService,
-        address: adresse,
-        preferredDate: preferredDate,
-        message: message,
-      });
+    // Send confirmation emails via Resend (non-blocking)
+    if (isResendConfigured()) {
+      try {
+        const emailResults = await sendBookingEmails({
+          clientName: nom,
+          clientEmail: email,
+          clientPhone: telephone,
+          vehicleInfo: vehicule,
+          damageType: damageType || "other",
+          serviceType: typeService,
+          address: adresse,
+          preferredDate: preferredDate,
+          message: message,
+        });
 
-      console.log("Email results:", emailResults);
-    } catch (emailError) {
-      // Log email error but don't fail the request
-      console.error("Email sending error:", emailError);
+        console.log("Email results:", {
+          clientSuccess: emailResults.clientEmail.success,
+          adminSuccess: emailResults.adminEmail.success,
+        });
+      } catch (emailError) {
+        // Log email error but don't fail the request
+        console.error("Email sending error:", emailError);
+      }
+    } else {
+      console.warn("Resend not configured, skipping emails");
     }
 
     return NextResponse.json(
@@ -89,9 +127,28 @@ export async function POST(request: Request) {
     );
   } catch (error) {
     console.error("API error:", error);
+
+    // Handle JSON parse errors
+    if (error instanceof SyntaxError && error.message.includes("JSON")) {
+      return NextResponse.json(
+        { error: "Format de requête invalide" },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Erreur interne du serveur" },
       { status: 500 }
     );
   }
+}
+
+// Add GET handler for health checks
+export async function GET() {
+  return NextResponse.json({
+    status: "ok",
+    supabase: isSupabaseConfigured() ? "configured" : "not configured",
+    resend: isResendConfigured() ? "configured" : "not configured",
+    envValid: isEnvValid,
+  });
 }

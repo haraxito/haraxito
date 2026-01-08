@@ -1,9 +1,27 @@
 import { Resend } from "resend";
 import { ClientConfirmationEmail } from "@/emails/ClientConfirmation";
 import { AdminNotificationEmail } from "@/emails/AdminNotification";
+import { getEnvVar, validateEnvVars } from "./env";
 
-// Initialize Resend client
-export const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend client with validation
+const resendApiKey = getEnvVar("RESEND_API_KEY");
+const envValidation = validateEnvVars();
+
+// Export Resend client - will be null if API key is missing
+export let resend: Resend | null = null;
+
+if (resendApiKey) {
+  try {
+    resend = new Resend(resendApiKey);
+  } catch (error) {
+    console.error("Failed to initialize Resend client:", error);
+    resend = null;
+  }
+} else {
+  if (envValidation.errors.some((e) => e.includes("RESEND_API_KEY"))) {
+    console.error("Resend initialization failed: RESEND_API_KEY is missing");
+  }
+}
 
 // Types
 interface BookingEmailData {
@@ -31,10 +49,24 @@ export async function sendClientConfirmationEmail(data: BookingEmailData) {
     message,
   } = data;
 
+  // Validate Resend is configured
+  if (!resend) {
+    console.warn(
+      "Resend client not configured, skipping client confirmation email"
+    );
+    return { success: false, error: new Error("Resend not configured") };
+  }
+
+  // Don't send if no email provided
+  if (!clientEmail) {
+    console.warn("No client email provided, skipping confirmation email");
+    return { success: false, error: new Error("No client email") };
+  }
+
   try {
     const { data: emailData, error } = await resend.emails.send({
       from:
-        process.env.RESEND_FROM_EMAIL ||
+        getEnvVar("RESEND_FROM_EMAIL") ||
         "AutoGlass Pro <onboarding@resend.dev>",
       to: clientEmail,
       subject: "✅ Confirmation de votre demande - AutoGlass Pro",
@@ -75,12 +107,20 @@ export async function sendAdminNotificationEmail(data: BookingEmailData) {
     message,
   } = data;
 
-  const adminEmail = process.env.ADMIN_EMAIL || "admin@example.com";
+  const adminEmail = getEnvVar("ADMIN_EMAIL") || "admin@example.com";
+
+  // Validate Resend is configured
+  if (!resend) {
+    console.warn(
+      "Resend client not configured, skipping admin notification email"
+    );
+    return { success: false, error: new Error("Resend not configured") };
+  }
 
   try {
     const { data: emailData, error } = await resend.emails.send({
       from:
-        process.env.RESEND_FROM_EMAIL ||
+        getEnvVar("RESEND_FROM_EMAIL") ||
         "AutoGlass Pro <onboarding@resend.dev>",
       to: adminEmail,
       subject: `🔔 Nouvelle demande - ${clientName} (${serviceType === "DOMICILE" ? "Domicile" : "Atelier"})`,
@@ -121,4 +161,9 @@ export async function sendBookingEmails(data: BookingEmailData) {
     clientEmail: clientResult,
     adminEmail: adminResult,
   };
+}
+
+// Helper function to check if Resend is configured
+export function isResendConfigured(): boolean {
+  return resend !== null;
 }

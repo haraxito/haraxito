@@ -15,7 +15,7 @@ export default function HomePage() {
           <span className="text-primary">Pare-Brise Rapide</span>
         </h1>
         <p className="text-slate-600 text-lg font-medium leading-relaxed mb-6">
-          On se déplace chez vous. Obtenez une soumission gratuite en quelques
+          On se déplace chez vous. Prenez rendez-vous gratuitement en quelques
           minutes.
         </p>
 
@@ -38,7 +38,7 @@ export default function HomePage() {
           {/* Card Header */}
           <div className="bg-slate-50 px-5 py-4 border-b border-slate-100 flex justify-between items-center">
             <h3 className="text-slate-800 font-bold text-lg">
-              Soumission gratuite
+              Rendez-vous gratuit
             </h3>
             <span className="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
               Sans engagement

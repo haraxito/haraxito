@@ -15,7 +15,6 @@ import {
   Sparkles,
   Zap,
 } from "lucide-react";
-import { supabase } from "@/lib/supabaseClient";
 
 type TypeService = "DOMICILE" | "ATELIER";
 type DamageType = "crack" | "chip" | "shattered";
@@ -30,6 +29,7 @@ type FormValues = {
   client_telephone: string;
   client_email?: string;
   date_souhaitee: string;
+  message?: string;
 };
 
 export default function BookingForm() {
@@ -71,7 +71,8 @@ export default function BookingForm() {
           typeService: typeService,
           adresse:
             typeService === "DOMICILE" ? values.adresse_intervention : null,
-          message: null,
+          // Fix: Send actual message instead of always null
+          message: values.message || null,
           damageType: damageType,
           preferredDate: values.date_souhaitee,
         }),
@@ -80,7 +81,9 @@ export default function BookingForm() {
       const result = await response.json();
 
       if (!response.ok) {
-        throw new Error(result.error || "Une erreur est survenue");
+        throw new Error(
+          result.error || result.details || "Une erreur est survenue"
+        );
       }
 
       setMessage({
@@ -89,7 +92,9 @@ export default function BookingForm() {
       });
       reset();
       setTypeService("DOMICILE");
+      setDamageType("crack");
     } catch (err: any) {
+      console.error("Form submission error:", err);
       setMessage({
         type: "error",
         text: err?.message ?? "Une erreur est survenue. Réessayez plus tard.",
@@ -118,8 +123,13 @@ export default function BookingForm() {
               className="input-field pl-10"
               placeholder="Nom complet"
               type="text"
-              {...register("client_nom", { required: true })}
+              {...register("client_nom", { required: "Le nom est requis" })}
             />
+            {errors.client_nom && (
+              <p className="text-red-600 text-xs mt-1">
+                {errors.client_nom.message}
+              </p>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             <div className="relative">
@@ -128,8 +138,15 @@ export default function BookingForm() {
                 className="input-field pl-10"
                 placeholder="Téléphone"
                 type="tel"
-                {...register("client_telephone", { required: true })}
+                {...register("client_telephone", {
+                  required: "Le téléphone est requis",
+                })}
               />
+              {errors.client_telephone && (
+                <p className="text-red-600 text-xs mt-1">
+                  {errors.client_telephone.message}
+                </p>
+              )}
             </div>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
@@ -176,17 +193,25 @@ export default function BookingForm() {
               className="input-field pl-10"
               placeholder="Marque"
               type="text"
-              {...register("marque", { required: true })}
+              {...register("marque", { required: "La marque est requise" })}
             />
           </div>
         </div>
+        {errors.marque && (
+          <p className="text-red-600 text-xs -mt-2 mb-2">
+            {errors.marque.message}
+          </p>
+        )}
         <div className="space-y-3">
           <input
             className="input-field"
             placeholder="Modèle (ex: Civic, Corolla)"
             type="text"
-            {...register("modele", { required: true })}
+            {...register("modele", { required: "Le modèle est requis" })}
           />
+          {errors.modele && (
+            <p className="text-red-600 text-xs">{errors.modele.message}</p>
+          )}
           <input
             className="input-field"
             placeholder="Assurance (optionnel)"
@@ -253,7 +278,7 @@ export default function BookingForm() {
         {/* Service Type Cards */}
         <div className="flex items-center gap-2 mb-3">
           <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500">
-            Lieu d'intervention
+            Lieu d&apos;intervention
           </h4>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -303,7 +328,7 @@ export default function BookingForm() {
             </div>
             <div>
               <div className="font-semibold text-slate-900 text-sm">
-                À l'Atelier
+                À l&apos;Atelier
               </div>
               <div className="text-xs text-slate-500">Vous venez à nous</div>
             </div>
@@ -318,12 +343,15 @@ export default function BookingForm() {
               placeholder="Adresse complète de l'intervention"
               type="text"
               {...register("adresse_intervention", {
-                required: typeService === "DOMICILE",
+                required:
+                  typeService === "DOMICILE"
+                    ? "L'adresse est requise pour le service mobile"
+                    : false,
               })}
             />
             {errors.adresse_intervention && (
               <p className="text-red-600 text-xs mt-1">
-                L'adresse est requise pour le service mobile.
+                {errors.adresse_intervention.message}
               </p>
             )}
           </div>
@@ -339,6 +367,15 @@ export default function BookingForm() {
             </p>
           </div>
         )}
+
+        {/* Optional Message Field */}
+        <div className="mt-3">
+          <textarea
+            className="input-field min-h-[80px] resize-none"
+            placeholder="Message supplémentaire (optionnel)"
+            {...register("message")}
+          />
+        </div>
       </div>
 
       <div className="h-px bg-slate-100 w-full"></div>
@@ -358,8 +395,13 @@ export default function BookingForm() {
           <input
             className="input-field pl-10"
             type="date"
-            {...register("date_souhaitee", { required: true })}
+            {...register("date_souhaitee", { required: "La date est requise" })}
           />
+          {errors.date_souhaitee && (
+            <p className="text-red-600 text-xs mt-1">
+              {errors.date_souhaitee.message}
+            </p>
+          )}
         </div>
       </div>
 
@@ -383,13 +425,13 @@ export default function BookingForm() {
         disabled={loading}
       >
         <span>
-          {loading ? "Envoi en cours…" : "Obtenir ma soumission gratuite"}
+          {loading ? "Envoi en cours…" : "Prendre rendez-vous gratuitement"}
         </span>
         {!loading && <ChevronRight className="w-5 h-5" />}
       </button>
 
       <p className="text-center text-xs text-slate-400">
-        En cliquant, vous acceptez nos conditions d'utilisation.
+        En cliquant, vous acceptez nos conditions d&apos;utilisation.
       </p>
     </form>
   );
