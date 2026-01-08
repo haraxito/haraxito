@@ -39,8 +39,8 @@ export async function POST(request: Request) {
       preferredDate,
     } = body;
 
-    // Validate required fields
-    if (!nom || !email || !telephone || !vehicule || !typeService) {
+    // Validate required fields (email is optional)
+    if (!nom || !telephone || !vehicule || !typeService) {
       return NextResponse.json(
         { error: "Champs requis manquants" },
         { status: 400 }
