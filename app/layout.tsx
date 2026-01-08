@@ -18,15 +18,13 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
-        {/* Google AdSense Script */}
-        {process.env.NEXT_PUBLIC_ADSENSE_ID && (
-          <Script
-            async
-            src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
-            crossOrigin="anonymous"
-            strategy="afterInteractive"
-          />
-        )}
+        {/* Google AdSense Script - Required for validation */}
+        <Script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3075219266385896"
+          crossOrigin="anonymous"
+          strategy="beforeInteractive"
+        />
       </head>
       <body className="bg-background-light text-slate-900 antialiased overflow-x-hidden">
         {/* Sticky Header */}
