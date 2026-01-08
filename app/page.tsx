@@ -1,13 +1,21 @@
 import BookingForm from "@/components/BookingForm";
-import AdBanner, { 
-  AdBannerHorizontal, 
-  AdBannerInFeed, 
-  AdBannerNative, 
+import AdBanner, {
+  AdBannerHorizontal,
+  AdBannerInFeed,
+  AdBannerNative,
   AdBannerInterstitial,
   AdBannerMultiplex,
-  AdBannerSticky
+  AdBannerSticky,
 } from "@/components/AdBanner";
-import { Shield, Wrench, Award, MapPin, Clock, Phone, Star } from "lucide-react";
+import {
+  Shield,
+  Wrench,
+  Award,
+  MapPin,
+  Clock,
+  Phone,
+  Star,
+} from "lucide-react";
 
 export default function HomePage() {
   return (
@@ -137,14 +145,18 @@ export default function HomePage() {
               <Shield className="w-5 h-5" />
             </div>
             <h4 className="text-slate-900 font-bold text-xs">Remplacement</h4>
-            <p className="text-slate-500 text-[10px] mt-1">Pare-brise complet</p>
+            <p className="text-slate-500 text-[10px] mt-1">
+              Pare-brise complet
+            </p>
           </div>
           <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-center">
             <div className="w-10 h-10 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 mx-auto mb-2">
               <Wrench className="w-5 h-5" />
             </div>
             <h4 className="text-slate-900 font-bold text-xs">Réparation</h4>
-            <p className="text-slate-500 text-[10px] mt-1">Éclats et fissures</p>
+            <p className="text-slate-500 text-[10px] mt-1">
+              Éclats et fissures
+            </p>
           </div>
           <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm text-center">
             <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 mx-auto mb-2">
@@ -176,20 +188,35 @@ export default function HomePage() {
         <div className="space-y-3">
           <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
             <div className="flex items-center gap-1 mb-2">
-              {[1,2,3,4,5].map(i => <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star
+                  key={i}
+                  className="w-4 h-4 fill-amber-400 text-amber-400"
+                />
+              ))}
             </div>
-            <p className="text-slate-600 text-sm">"Service impeccable! Le technicien est venu chez moi et a remplacé mon pare-brise en moins d'une heure."</p>
+            <p className="text-slate-600 text-sm">
+              "Service impeccable! Le technicien est venu chez moi et a remplacé
+              mon pare-brise en moins d'une heure."
+            </p>
             <p className="text-slate-400 text-xs mt-2">- Marie L., Montréal</p>
           </div>
-          
+
           {/* In-Feed Ad - Between Testimonials */}
           <AdBannerInFeed adSlot="6666666666" />
-          
+
           <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
             <div className="flex items-center gap-1 mb-2">
-              {[1,2,3,4,5].map(i => <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />)}
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star
+                  key={i}
+                  className="w-4 h-4 fill-amber-400 text-amber-400"
+                />
+              ))}
             </div>
-            <p className="text-slate-600 text-sm">"Excellent rapport qualité-prix. L'assurance a tout couvert!"</p>
+            <p className="text-slate-600 text-sm">
+              "Excellent rapport qualité-prix. L'assurance a tout couvert!"
+            </p>
             <p className="text-slate-400 text-xs mt-2">- Jean P., Laval</p>
           </div>
         </div>
@@ -222,16 +249,28 @@ export default function HomePage() {
         </h3>
         <div className="space-y-3">
           <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
-            <h4 className="text-slate-900 font-bold text-sm">Combien coûte un remplacement?</h4>
-            <p className="text-slate-500 text-xs mt-1">Souvent couvert à 100% par votre assurance sans franchise.</p>
+            <h4 className="text-slate-900 font-bold text-sm">
+              Combien coûte un remplacement?
+            </h4>
+            <p className="text-slate-500 text-xs mt-1">
+              Souvent couvert à 100% par votre assurance sans franchise.
+            </p>
           </div>
           <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
-            <h4 className="text-slate-900 font-bold text-sm">Combien de temps ça prend?</h4>
-            <p className="text-slate-500 text-xs mt-1">En général, 45 minutes à 1 heure pour un remplacement complet.</p>
+            <h4 className="text-slate-900 font-bold text-sm">
+              Combien de temps ça prend?
+            </h4>
+            <p className="text-slate-500 text-xs mt-1">
+              En général, 45 minutes à 1 heure pour un remplacement complet.
+            </p>
           </div>
           <div className="p-4 bg-white rounded-xl border border-slate-100 shadow-sm">
-            <h4 className="text-slate-900 font-bold text-sm">Vous vous déplacez où?</h4>
-            <p className="text-slate-500 text-xs mt-1">Partout dans la grande région de Montréal et environs.</p>
+            <h4 className="text-slate-900 font-bold text-sm">
+              Vous vous déplacez où?
+            </h4>
+            <p className="text-slate-500 text-xs mt-1">
+              Partout dans la grande région de Montréal et environs.
+            </p>
           </div>
         </div>
       </section>
@@ -240,9 +279,14 @@ export default function HomePage() {
       <section className="mt-8 px-5">
         <div className="bg-primary rounded-2xl p-6 text-center">
           <Phone className="w-10 h-10 text-white mx-auto mb-3" />
-          <h3 className="text-white font-bold text-lg mb-2">Besoin d'aide immédiate?</h3>
+          <h3 className="text-white font-bold text-lg mb-2">
+            Besoin d'aide immédiate?
+          </h3>
           <p className="text-blue-100 text-sm mb-4">Appelez-nous maintenant</p>
-          <a href="tel:+15141234567" className="inline-block bg-white text-primary font-bold py-3 px-6 rounded-xl">
+          <a
+            href="tel:+15141234567"
+            className="inline-block bg-white text-primary font-bold py-3 px-6 rounded-xl"
+          >
             514-123-4567
           </a>
         </div>

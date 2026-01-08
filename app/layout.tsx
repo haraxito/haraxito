@@ -3,11 +3,12 @@ import type { Metadata } from "next";
 import { Phone, Car } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/react";
 
 export const metadata: Metadata = {
-  title: "AutoGlass Pro - Remplacement de pare-brise",
+  title: "Parebrise Instant - Remplacement de pare-brise",
   description:
-    "Service professionnel de remplacement de pare-brise. Mobile ou en atelier.",
+    "Service professionnel de remplacement de pare-brise. Mobile ou en atelier. Montréal et environs.",
 };
 
 export default function RootLayout({
@@ -54,7 +55,7 @@ export default function RootLayout({
         {/* Footer */}
         <footer className="text-center pb-8">
           <p className="text-slate-400 text-sm">
-            © 2024 AutoGlass Pro. Tous droits réservés.
+            © 2026 Parebrise Instant. Tous droits réservés.
           </p>
           <Link
             href="/admin"
@@ -63,6 +64,7 @@ export default function RootLayout({
             Admin
           </Link>
         </footer>
+        <Analytics />
       </body>
     </html>
   );

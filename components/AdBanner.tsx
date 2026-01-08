@@ -65,7 +65,9 @@ export function AdBannerSquare({ adSlot }: { adSlot: string }) {
 export function AdBannerInFeed({ adSlot }: { adSlot: string }) {
   return (
     <div className="w-full bg-white rounded-xl border border-slate-100 shadow-sm overflow-hidden my-4 p-3">
-      <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">Publicité</p>
+      <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-1">
+        Publicité
+      </p>
       <AdBanner adSlot={adSlot} adFormat="fluid" />
     </div>
   );
@@ -75,7 +77,9 @@ export function AdBannerInFeed({ adSlot }: { adSlot: string }) {
 export function AdBannerNative({ adSlot }: { adSlot: string }) {
   return (
     <div className="w-full bg-gradient-to-br from-blue-50 to-slate-50 rounded-xl border border-blue-100 overflow-hidden my-6 p-4">
-      <p className="text-[10px] text-blue-400 uppercase tracking-wider font-medium mb-2">Contenu sponsorisé</p>
+      <p className="text-[10px] text-blue-400 uppercase tracking-wider font-medium mb-2">
+        Contenu sponsorisé
+      </p>
       <AdBanner adSlot={adSlot} adFormat="fluid" />
     </div>
   );
@@ -97,7 +101,9 @@ export function AdBannerInterstitial({ adSlot }: { adSlot: string }) {
   return (
     <div className="w-full bg-gradient-to-r from-primary/5 via-white to-primary/5 py-6 px-4 my-8">
       <div className="max-w-md mx-auto">
-        <p className="text-[10px] text-slate-400 uppercase tracking-wider text-center mb-2">Nos partenaires</p>
+        <p className="text-[10px] text-slate-400 uppercase tracking-wider text-center mb-2">
+          Nos partenaires
+        </p>
         <AdBanner adSlot={adSlot} adFormat="auto" />
       </div>
     </div>
@@ -117,7 +123,9 @@ export function AdBannerVertical({ adSlot }: { adSlot: string }) {
 export function AdBannerMultiplex({ adSlot }: { adSlot: string }) {
   return (
     <div className="w-full bg-slate-50 rounded-xl border border-slate-100 overflow-hidden my-6 p-4">
-      <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-3">Vous pourriez aimer</p>
+      <p className="text-[10px] text-slate-400 uppercase tracking-wider mb-3">
+        Vous pourriez aimer
+      </p>
       <AdBanner adSlot={adSlot} adFormat="auto" />
     </div>
   );
@@ -127,7 +135,9 @@ export function AdBannerMultiplex({ adSlot }: { adSlot: string }) {
 export function AdBannerPostForm({ adSlot }: { adSlot: string }) {
   return (
     <div className="w-full bg-emerald-50 rounded-xl border border-emerald-100 overflow-hidden mt-6 p-4">
-      <p className="text-[10px] text-emerald-500 uppercase tracking-wider mb-2">En attendant votre confirmation</p>
+      <p className="text-[10px] text-emerald-500 uppercase tracking-wider mb-2">
+        En attendant votre confirmation
+      </p>
       <AdBanner adSlot={adSlot} adFormat="auto" />
     </div>
   );
