@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { render } from "@react-email/render";
 import { ClientConfirmationEmail } from "@/emails/ClientConfirmation";
 import { AdminNotificationEmail } from "@/emails/AdminNotification";
 import { getEnvVar, validateEnvVars } from "./env";
@@ -64,13 +65,9 @@ export async function sendClientConfirmationEmail(data: BookingEmailData) {
   }
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
-      from:
-        getEnvVar("RESEND_FROM_EMAIL") ||
-        "AutoGlass Pro <onboarding@resend.dev>",
-      to: clientEmail,
-      subject: "✅ Confirmation de votre demande - AutoGlass Pro",
-      react: ClientConfirmationEmail({
+    // Render React component to HTML
+    const emailHtml = await render(
+      ClientConfirmationEmail({
         clientName,
         vehicleInfo,
         damageType,
@@ -78,7 +75,16 @@ export async function sendClientConfirmationEmail(data: BookingEmailData) {
         address,
         preferredDate,
         message,
-      }),
+      })
+    );
+
+    const { data: emailData, error } = await resend.emails.send({
+      from:
+        getEnvVar("RESEND_FROM_EMAIL") ||
+        "Parebrise Instant <onboarding@resend.dev>",
+      to: clientEmail,
+      subject: "✅ Confirmation de votre demande - Parebrise Instant",
+      html: emailHtml,
     });
 
     if (error) {
@@ -118,13 +124,9 @@ export async function sendAdminNotificationEmail(data: BookingEmailData) {
   }
 
   try {
-    const { data: emailData, error } = await resend.emails.send({
-      from:
-        getEnvVar("RESEND_FROM_EMAIL") ||
-        "AutoGlass Pro <onboarding@resend.dev>",
-      to: adminEmail,
-      subject: `🔔 Nouvelle demande - ${clientName} (${serviceType === "DOMICILE" ? "Domicile" : "Atelier"})`,
-      react: AdminNotificationEmail({
+    // Render React component to HTML
+    const emailHtml = await render(
+      AdminNotificationEmail({
         clientName,
         clientEmail,
         clientPhone,
@@ -134,7 +136,16 @@ export async function sendAdminNotificationEmail(data: BookingEmailData) {
         address,
         preferredDate,
         message,
-      }),
+      })
+    );
+
+    const { data: emailData, error } = await resend.emails.send({
+      from:
+        getEnvVar("RESEND_FROM_EMAIL") ||
+        "Parebrise Instant <onboarding@resend.dev>",
+      to: adminEmail,
+      subject: `🔔 Nouvelle demande - ${clientName} (${serviceType === "DOMICILE" ? "Domicile" : "Atelier"})`,
+      html: emailHtml,
       replyTo: clientEmail,
     });
 

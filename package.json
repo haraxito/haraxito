@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@react-email/components": "^1.0.4",
+    "@react-email/render": "^2.0.2",
     "@supabase/supabase-js": "^2.46.1",
     "@vercel/analytics": "^1.6.1",
     "lucide-react": "^0.453.0",
