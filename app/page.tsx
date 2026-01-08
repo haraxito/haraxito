@@ -21,9 +21,9 @@ export default function HomePage() {
   return (
     <>
       {/* Top Banner Ad - Above Hero */}
-      <section className="px-4 pt-2">
+      {/* <section className="px-4 pt-2">
         <AdBannerHorizontal adSlot="1111111111" />
-      </section>
+      </section> */}
 
       {/* Hero Section */}
       <section className="relative pt-4 pb-8 px-5 bg-gradient-to-b from-white to-transparent">

@@ -54,7 +54,9 @@ export default function AdminLoginPage() {
         {/* Login Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-slate-800">Connexion Admin</h2>
+            <h2 className="text-xl font-semibold text-slate-800">
+              Connexion Admin
+            </h2>
             <p className="text-slate-500 text-sm mt-1">
               Entrez le mot de passe pour accéder au tableau de bord
             </p>
@@ -71,7 +73,10 @@ export default function AdminLoginPage() {
 
             {/* Password Input */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-slate-700 mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-slate-700 mb-2"
+              >
                 Mot de passe
               </label>
               <div className="relative">
@@ -93,7 +98,11 @@ export default function AdminLoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
             </div>
