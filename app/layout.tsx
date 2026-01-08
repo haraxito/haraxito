@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Phone, Car } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "Parebrise Instant - Remplacement de pare-brise",
