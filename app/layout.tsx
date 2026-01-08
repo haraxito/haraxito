@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Phone, Car } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "AutoGlass Pro - Remplacement de pare-brise",
@@ -50,6 +51,9 @@ export default function RootLayout({
 
         {/* Main Content */}
         <main className="w-full max-w-4xl mx-auto pb-12">{children}</main>
+
+        {/* Analytics */}
+        <Analytics />
 
         {/* Footer */}
         <footer className="text-center pb-8">
