@@ -1,0 +1,21 @@
+# To learn more about the skaffold.yaml schema visit
+# https://skaffold.dev/docs/references/yaml/
+apiVersion: skaffold/v2beta19
+kind: Config
+build:
+  tagPolicy:
+    sha256: {}
+  artifacts:
+  - context: .
+    image: nodejs-hello-world
+deploy:
+  kubectl:
+    manifests: ["kubernetes-manifests/hello.deployment.yaml", "kubernetes-manifests/hello.service.yaml"]
+profiles:
+- name: cloudbuild
+  build:
+    googleCloudBuild: {}
+- name: internalpool # This profile is for running clusters with internal IP addresses.
+  deploy:
+    kubectl:
+      manifests: ["kubernetes-manifests/hello.deployment.yaml", "kubernetes-manifests/hello.service.internal.yaml"]
