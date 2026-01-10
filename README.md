@@ -29,6 +29,25 @@ Client remplit formulaire → Next.js envoie à /api/booking
 → API valide et sauvegarde dans Supabase → Emails envoyés → Confirmation
 ```
 
+### Configuration Supabase Détaillée
+
+#### 2. Récupérer vos clés
+
+Dans **Settings > API** de votre projet Supabase :
+
+- `anon` public key → `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `service_role` secret key → `SUPABASE_SERVICE_ROLE_KEY`
+
+#### 3. Configurer les variables
+
+Modifiez `.env.local` :
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=votre_URL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_clé_anon
+SUPABASE_SERVICE_ROLE_KEY=votre_clé_service_role
+```
+
 ---
 
 ## ⚡ Optimisations SSR Récentes
