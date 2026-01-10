@@ -33,7 +33,7 @@ Dans **Settings > API** de votre projet Supabase :
 Modifiez `.env.local` :
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://mnjrloqjkpdktkptzjum.supabase.co
+NEXT_PUBLIC_SUPABASE_URL=votre_URL
 NEXT_PUBLIC_SUPABASE_ANON_KEY=votre_clé_anon
 SUPABASE_SERVICE_ROLE_KEY=votre_clé_service_role
 ```
