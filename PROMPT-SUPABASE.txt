@@ -1,0 +1,128 @@
+========================================
+PROMPT À COPIER-COLLER DANS L'ASSISTANT SUPABASE
+========================================
+
+Bonjour,
+
+Je développe une application Next.js de prise de rendez-vous pour un service de remplacement de pare-brise. J'ai besoin d'aide pour configurer ma base de données Supabase.
+
+1. CRÉER LA TABLE ET LES POLITIQUES RLS
+---------------------------------------
+
+Merci d'exécuter ce script SQL dans mon projet Supabase :
+
+```sql
+-- Schema: Auto Glass Booking (rendez_vous)
+-- Creates table and Row Level Security (RLS) policies
+
+create schema if not exists public;
+
+create table if not exists public.rendez_vous (
+  id bigint generated always as identity primary key,
+  created_at timestamptz not null default now(),
+  client_nom text not null,
+  client_telephone text not null,
+  client_email text null,
+  vehicule_infos text not null,
+  type_service text not null check (type_service in ('DOMICILE','ATELIER')),
+  adresse_intervention text null,
+  date_souhaitee date not null,
+  statut text not null default 'Nouveau',
+  -- Ensure address presence only for DOMICILE
+  constraint adresse_domicle_check check (
+    (type_service = 'DOMICILE' and adresse_intervention is not null)
+    or (type_service = 'ATELIER' and adresse_intervention is null)
+  )
+);
+
+comment on table public.rendez_vous is 'Prise de rendez-vous pare-brise';
+comment on column public.rendez_vous.type_service is 'DOMICILE ou ATELIER';
+comment on column public.rendez_vous.adresse_intervention is 'Adresse si DOMICILE';
+
+-- Indexes for admin dashboard sorting/filtering
+create index if not exists rendez_vous_created_at_idx on public.rendez_vous (created_at desc);
+create index if not exists rendez_vous_date_souhaitee_idx on public.rendez_vous (date_souhaitee);
+create index if not exists rendez_vous_type_service_idx on public.rendez_vous (type_service);
+
+-- Enable Row Level Security
+alter table public.rendez_vous enable row level security;
+
+-- Public insert: allow both anon and authenticated users to insert bookings
+create policy if not exists "public_insert_rendez_vous"
+  on public.rendez_vous
+  for insert
+  to anon, authenticated
+  with check (true);
+
+-- Admin read policy: allow only authenticated users with JWT claim role=admin
+create policy if not exists "admins_can_select_rendez_vous"
+  on public.rendez_vous
+  for select
+  to authenticated
+  using ((auth.jwt() ->> 'role') = 'admin');
+
+-- Service role bypass (server-side only). This is safe for server usage.
+create policy if not exists "service_role_can_select_rendez_vous"
+  on public.rendez_vous
+  for select
+  to service_role
+  using (true);
+```
+
+2. MES CHOIX POUR LA CONFIGURATION
+-----------------------------------
+
+Pour vos questions :
+
+✅ OUI - Supprimer les anciennes politiques
+   (Pour repartir sur une base propre)
+
+❌ NON - Pas de contraintes supplémentaires sur email/téléphone
+   (La validation est déjà faite côté application Next.js)
+
+✅ OUI - Insérer 2-3 données de test
+   Exemples souhaités :
+   - 1 réservation DOMICILE avec adresse complète
+   - 1 réservation ATELIER sans adresse
+   - 1 réservation avec email, 1 sans email (car le champ email est optionnel)
+
+❌ NON - Pas besoin d'Edge Function
+   (J'utilise déjà une API Route Next.js dans /api/booking/route.ts
+    qui insère directement dans la table avec le service_role key)
+
+3. VÉRIFIER MES CLÉS API
+-------------------------
+
+Mon URL Supabase est : https://mnjrloqjkpdktkptzjum.supabase.co
+
+Pouvez-vous me confirmer mes clés API actuelles ?
+
+Je souhaite vérifier :
+- La clé publique anon (NEXT_PUBLIC_SUPABASE_ANON_KEY)
+- La clé service_role (SUPABASE_SERVICE_ROLE_KEY)
+
+Car j'ai actuellement un problème avec ma clé anon qui contient un placeholder "VOTRE_ANON_KEY_ICI" dans mon fichier .env.local
+
+4. VÉRIFICATION FINALE
+-----------------------
+
+Une fois créé, pouvez-vous confirmer que :
+- ✅ La table rendez_vous existe
+- ✅ Les politiques RLS sont actives
+- ✅ Les 3 index sont créés
+- ✅ Les contraintes (checks) fonctionnent
+- ✅ Les données de test sont insérées
+
+Merci beaucoup pour votre aide !
+
+========================================
+FIN DU PROMPT
+========================================
+
+INSTRUCTIONS :
+1. Copier tout le texte ci-dessus (depuis "Bonjour" jusqu'à "Merci beaucoup")
+2. Coller dans la conversation avec l'assistant Supabase
+3. Envoyer
+4. Attendre la réponse avec vos vraies clés API
+5. Mettre à jour votre .env.local avec les vraies clés
+6. Exécuter : node debug-supabase.js pour vérifier

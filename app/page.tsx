@@ -284,10 +284,10 @@ export default function HomePage() {
           </h3>
           <p className="text-blue-100 text-sm mb-4">Appelez-nous maintenant</p>
           <a
-            href="tel:+15141234567"
+            href="tel:+15147544607"
             className="inline-block bg-white text-primary font-bold py-3 px-6 rounded-xl"
           >
-            514-123-4567
+            514-754-4607
           </a>
         </div>
       </section>
@@ -298,12 +298,9 @@ export default function HomePage() {
       </section>
 
       {/* Native Ad - Bottom */}
-      <section className="px-5 mb-20">
+      <section className="px-5 mb-8">
         <AdBannerNative adSlot="9999999999" />
       </section>
-
-      {/* Sticky Ad - Fixed at Bottom */}
-      <AdBannerSticky adSlot="1010101010" />
     </>
   );
 }

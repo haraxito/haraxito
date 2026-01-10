@@ -19,6 +19,21 @@ export default function RootLayout({
   return (
     <html lang="fr">
       <head>
+        {/* Google Fonts - Inter */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+
         {/* Google AdSense Script - Required for validation */}
         <Script
           async
@@ -40,7 +55,7 @@ export default function RootLayout({
               </h1>
             </Link>
             <a
-              href="tel:+15145551234"
+              href="tel:+15147544607"
               className="flex items-center justify-center bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white px-4 py-2 rounded-full transition-colors shadow-md shadow-emerald-500/20"
             >
               <Phone className="w-4 h-4 mr-1.5 fill-current" />

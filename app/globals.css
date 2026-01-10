@@ -1,5 +1,3 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -73,7 +71,27 @@ body {
 
 /* Form inputs */
 .input-field {
-  @apply w-full h-12 px-4 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-base;
+  @apply w-full h-14 px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-base font-medium leading-tight;
+}
+
+.input-field:focus {
+  @apply bg-white border-primary shadow-md shadow-primary/10;
+}
+
+/* Textarea specific styling */
+.input-field textarea,
+textarea.input-field {
+  @apply resize-none py-3 leading-relaxed;
+}
+
+/* Select dropdown styling */
+select.input-field {
+  @apply cursor-pointer bg-white;
+}
+
+/* Input with icon padding adjustment */
+.input-field.pl-10 {
+  @apply pl-11;
 }
 
 /* Trust badge */
