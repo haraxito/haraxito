@@ -67,9 +67,6 @@ export default function RootLayout({
         {/* Main Content */}
         <main className="w-full max-w-4xl mx-auto pb-12">{children}</main>
 
-        {/* Analytics */}
-        <Analytics />
-
         {/* Footer */}
         <footer className="text-center pb-8">
           <p className="text-slate-400 text-sm">
@@ -82,6 +79,8 @@ export default function RootLayout({
             Admin
           </Link>
         </footer>
+
+        {/* Analytics */}
         <Analytics />
       </body>
     </html>

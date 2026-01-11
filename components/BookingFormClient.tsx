@@ -15,7 +15,7 @@ import {
   Zap,
   MapPin,
 } from "lucide-react";
-import type { FormValues, TypeService, DamageType, Marque } from "@/lib/constants";
+import type { FormValues, TypeService, DamageType } from "@/lib/constants";
 
 type BookingFormClientProps = {
   marques: readonly string[];
