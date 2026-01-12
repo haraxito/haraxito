@@ -47,11 +47,11 @@ export default function RootLayout({
         <header className="glass-header sticky top-0 z-50 w-full border-b border-slate-200 shadow-sm">
           <div className="flex items-center justify-between px-4 h-16 max-w-4xl mx-auto">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white">
+              <div className="w-9 h-9 bg-gradient-to-br from-primary to-blue-600 rounded-lg flex items-center justify-center text-white shadow-md shadow-primary/30">
                 <Car className="w-5 h-5" />
               </div>
               <h1 className="text-primary text-lg font-bold tracking-tight">
-                AutoGlass Pro
+                Parebrise Instant
               </h1>
             </Link>
             <a

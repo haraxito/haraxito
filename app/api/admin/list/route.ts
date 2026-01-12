@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabaseClient";
 import { isAuthenticated } from "@/lib/auth";
 
+// Force dynamic rendering for this route (uses request.url)
+export const dynamic = 'force-dynamic';
+
 /**
  * GET /api/admin/list
  *

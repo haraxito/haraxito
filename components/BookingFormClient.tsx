@@ -10,10 +10,13 @@ import {
   Mail,
   User,
   ChevronRight,
+  ChevronLeft,
   CircleDot,
   Sparkles,
   Zap,
   MapPin,
+  Car,
+  Check,
 } from "lucide-react";
 import type { FormValues, TypeService, DamageType } from "@/lib/constants";
 
@@ -30,7 +33,9 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
     reset,
     formState: { errors },
     watch,
+    trigger,
   } = useForm<FormValues>();
+  const [currentStep, setCurrentStep] = useState(1);
   const [typeService, setTypeService] = useState<TypeService>("DOMICILE");
   const [damageType, setDamageType] = useState<DamageType>("crack");
   const [loading, setLoading] = useState(false);
@@ -39,8 +44,54 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
     text: string;
   } | null>(null);
 
+  const totalSteps = 5;
+
   // Watch if "Autre" is selected
   const marqueValue = watch("marque");
+  const anneeValue = watch("annee");
+  const modeleValue = watch("modele");
+
+  // Navigation handlers
+  const nextStep = async () => {
+    let fieldsToValidate: (keyof FormValues)[] = [];
+
+    // Validate current step fields
+    switch (currentStep) {
+      case 1:
+        fieldsToValidate = ["annee", "marque", "modele"];
+        if (marqueValue === "Autre") {
+          fieldsToValidate.push("marque_autre");
+        }
+        break;
+      case 2:
+        // Damage type validation (always selected)
+        break;
+      case 3:
+        if (typeService === "DOMICILE") {
+          fieldsToValidate = ["adresse_intervention"];
+        }
+        break;
+      case 4:
+        fieldsToValidate = ["client_nom", "client_telephone"];
+        break;
+      case 5:
+        fieldsToValidate = ["date_souhaitee"];
+        break;
+    }
+
+    const isValid = await trigger(fieldsToValidate);
+    if (isValid && currentStep < totalSteps) {
+      setCurrentStep(currentStep + 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
+
+  const prevStep = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   const onSubmit = async (values: FormValues) => {
     setLoading(true);
@@ -88,6 +139,7 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
         text: "✓ Votre demande a été enregistrée ! Un email de confirmation vous a été envoyé.",
       });
       reset();
+      setCurrentStep(1);
       setTypeService("DOMICILE");
       setDamageType("crack");
     } catch (err: any) {
@@ -102,349 +154,26 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
   };
 
   return (
-    <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
-      {/* Step 1: Contact Info */}
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-            1
+    <div className="space-y-4">
+      {/* Progress Bar */}
+      <div className="mb-6">
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-xs font-semibold text-slate-600">
+            Étape {currentStep} sur {totalSteps}
           </span>
-          <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500">
-            Informations de contact
-          </h4>
+          <span className="text-xs text-slate-500">
+            {Math.round((currentStep / totalSteps) * 100)}%
+          </span>
         </div>
-        <div className="space-y-3">
-          <div className="relative">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-            <input
-              className="input-field pl-10 !mb-0"
-              placeholder="Nom complet *"
-              type="text"
-              {...register("client_nom", { required: "Le nom est requis" })}
-            />
-            {errors.client_nom && (
-              <p className="text-red-600 text-xs mt-1 !mb-2">
-                {errors.client_nom.message}
-              </p>
-            )}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            <div className="relative">
-              <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                className="input-field pl-10 !mb-0"
-                placeholder="Téléphone *"
-                type="tel"
-                inputMode="tel"
-                autoComplete="tel"
-                {...register("client_telephone", {
-                  required: "Le téléphone est requis",
-                  pattern: {
-                    value: /^[\d\s\-\+\(\)]+$/,
-                    message: "Numéro de téléphone invalide"
-                  }
-                })}
-              />
-              {errors.client_telephone && (
-                <p className="text-red-600 text-xs mt-1 !mb-2">
-                  {errors.client_telephone.message}
-                </p>
-              )}
-            </div>
-            <div className="relative">
-              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                className="input-field pl-10 !mb-0"
-                placeholder="Email (optionnel)"
-                type="email"
-                inputMode="email"
-                autoComplete="email"
-                {...register("client_email", {
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Format d'email invalide"
-                  }
-                })}
-              />
-              {errors.client_email && (
-                <p className="text-red-600 text-xs mt-1">
-                  {errors.client_email.message}
-                </p>
-              )}
-            </div>
-          </div>
+        <div className="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+          <div
+            className="bg-primary h-full transition-all duration-300 ease-out"
+            style={{ width: `${(currentStep / totalSteps) * 100}%` }}
+          ></div>
         </div>
       </div>
 
-      <div className="h-px bg-slate-100 w-full"></div>
-
-      {/* Step 2: Vehicle Info */}
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-            2
-          </span>
-          <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500">
-            Détails du véhicule
-          </h4>
-        </div>
-        <div className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <select
-              className="input-field !mb-0"
-              {...register("annee", { required: "L'année est requise" })}
-            >
-              <option value="">Année *</option>
-              {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
-              ))}
-            </select>
-            <select
-              className="input-field !mb-0"
-              {...register("marque", { required: "La marque est requise" })}
-            >
-              <option value="">Marque *</option>
-              {marques.map((marque) => (
-                <option key={marque} value={marque}>
-                  {marque}
-                </option>
-              ))}
-            </select>
-          </div>
-          {(errors.annee || errors.marque) && (
-            <p className="text-red-600 text-xs -mt-1 mb-2">
-              {errors.annee?.message || errors.marque?.message}
-            </p>
-          )}
-
-          {marqueValue === "Autre" && (
-            <input
-              className="input-field !mb-0"
-              placeholder="Précisez la marque *"
-              type="text"
-              autoComplete="off"
-              {...register("marque_autre", {
-                required: marqueValue === "Autre" ? "Précisez la marque" : false
-              })}
-            />
-          )}
-
-          <input
-            className="input-field !mb-0"
-            placeholder="Modèle (ex: Civic, Corolla) *"
-            type="text"
-            autoComplete="off"
-            {...register("modele", { required: "Le modèle est requis" })}
-          />
-          {errors.modele && (
-            <p className="text-red-600 text-xs -mt-1 mb-2">{errors.modele.message}</p>
-          )}
-
-          <input
-            className="input-field !mb-0"
-            placeholder="Compagnie d'assurance (optionnel)"
-            type="text"
-            autoComplete="off"
-            {...register("assurance")}
-          />
-        </div>
-      </div>
-
-      <div className="h-px bg-slate-100 w-full"></div>
-
-      {/* Step 3: Damage & Service Type */}
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-            3
-          </span>
-          <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500">
-            Type de dommage
-          </h4>
-        </div>
-        <div className="grid grid-cols-3 gap-2 mb-4">
-          {/* Crack */}
-          <button
-            type="button"
-            onClick={() => setDamageType("crack")}
-            className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all ${
-              damageType === "crack"
-                ? "border-primary bg-primary/5 text-primary"
-                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            <Zap className="w-5 h-5 mb-1" />
-            <span className="text-xs font-semibold">Fissure</span>
-          </button>
-          {/* Chip */}
-          <button
-            type="button"
-            onClick={() => setDamageType("chip")}
-            className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all ${
-              damageType === "chip"
-                ? "border-primary bg-primary/5 text-primary"
-                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            <CircleDot className="w-5 h-5 mb-1" />
-            <span className="text-xs font-semibold">Éclat</span>
-          </button>
-          {/* Shattered */}
-          <button
-            type="button"
-            onClick={() => setDamageType("shattered")}
-            className={`flex flex-col items-center justify-center p-3 rounded-lg border transition-all ${
-              damageType === "shattered"
-                ? "border-primary bg-primary/5 text-primary"
-                : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            <Sparkles className="w-5 h-5 mb-1" />
-            <span className="text-xs font-semibold">Brisé</span>
-          </button>
-        </div>
-
-        {/* Service Type Cards */}
-        <div className="flex items-center gap-2 mb-3">
-          <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500">
-            Lieu d&apos;intervention
-          </h4>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <button
-            type="button"
-            className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left ${
-              typeService === "DOMICILE"
-                ? "border-primary bg-primary/5"
-                : "border-slate-200 bg-white hover:border-slate-300"
-            }`}
-            onClick={() => setTypeService("DOMICILE")}
-          >
-            <div
-              className={`p-2 rounded-lg ${
-                typeService === "DOMICILE"
-                  ? "bg-primary text-white"
-                  : "bg-slate-100 text-slate-600"
-              }`}
-            >
-              <Truck className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="font-semibold text-slate-900 text-sm">
-                Service Mobile
-              </div>
-              <div className="text-xs text-slate-500">On vient à vous</div>
-            </div>
-          </button>
-
-          <button
-            type="button"
-            className={`flex items-center gap-3 p-4 rounded-xl border-2 transition-all text-left ${
-              typeService === "ATELIER"
-                ? "border-primary bg-primary/5"
-                : "border-slate-200 bg-white hover:border-slate-300"
-            }`}
-            onClick={() => setTypeService("ATELIER")}
-          >
-            <div
-              className={`p-2 rounded-lg ${
-                typeService === "ATELIER"
-                  ? "bg-primary text-white"
-                  : "bg-slate-100 text-slate-600"
-              }`}
-            >
-              <Building2 className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="font-semibold text-slate-900 text-sm">
-                À l&apos;Atelier
-              </div>
-              <div className="text-xs text-slate-500">Vous venez à nous</div>
-            </div>
-          </button>
-        </div>
-
-        {/* Conditional Address */}
-        {typeService === "DOMICILE" && (
-          <div className="mt-3">
-            <div className="relative">
-              <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-              <input
-                className="input-field pl-10 !mb-0"
-                placeholder="Adresse complète de l'intervention *"
-                type="text"
-                autoComplete="street-address"
-                {...register("adresse_intervention", {
-                  required:
-                    typeService === "DOMICILE"
-                      ? "L'adresse est requise pour le service mobile"
-                      : false,
-                })}
-              />
-            </div>
-            {errors.adresse_intervention && (
-              <p className="text-red-600 text-xs mt-1">
-                {errors.adresse_intervention.message}
-              </p>
-            )}
-          </div>
-        )}
-
-        {typeService === "ATELIER" && (
-          <div className="mt-3 p-3 bg-slate-50 rounded-lg border border-slate-200">
-            <p className="text-sm text-slate-700">
-              <strong>Notre adresse :</strong> 123 Rue du Pare-Brise, Montréal
-            </p>
-            <p className="text-xs text-slate-500 mt-0.5">
-              Lun-Ven 8h-17h, Sam 9h-13h
-            </p>
-          </div>
-        )}
-
-        {/* Optional Message Field */}
-        <div className="mt-3">
-          <textarea
-            className="input-field min-h-[80px] resize-none"
-            placeholder="Message supplémentaire (optionnel)"
-            {...register("message")}
-          />
-        </div>
-      </div>
-
-      <div className="h-px bg-slate-100 w-full"></div>
-
-      {/* Step 4: Date */}
-      <div>
-        <div className="flex items-center gap-2 mb-3">
-          <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold">
-            4
-          </span>
-          <h4 className="text-sm font-bold uppercase tracking-wide text-slate-500">
-            Date souhaitée
-          </h4>
-        </div>
-        <div className="relative">
-          <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-          <input
-            className="input-field pl-10 !mb-0"
-            type="date"
-            min={minDate}
-            {...register("date_souhaitee", { required: "La date est requise" })}
-          />
-          {errors.date_souhaitee && (
-            <p className="text-red-600 text-xs mt-1 !mb-2">
-              {errors.date_souhaitee.message}
-            </p>
-          )}
-        </div>
-        <p className="text-xs text-slate-500 mt-2">
-          💡 Nous vous contacterons pour confirmer la disponibilité
-        </p>
-      </div>
-
-      {/* Message */}
+      {/* Success/Error Message */}
       {message && (
         <div
           className={`rounded-lg p-4 ${
@@ -457,21 +186,564 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
         </div>
       )}
 
-      {/* CTA Button */}
-      <button
-        type="submit"
-        className="w-full h-14 btn-emerald text-lg flex items-center justify-center gap-2"
-        disabled={loading}
-      >
-        <span>
-          {loading ? "Envoi en cours…" : "Prendre rendez-vous gratuitement"}
-        </span>
-        {!loading && <ChevronRight className="w-5 h-5" />}
-      </button>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {/* Step 1: Vehicle Information */}
+        {currentStep === 1 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Car className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">
+                Informations sur votre véhicule
+              </h3>
+              <p className="text-sm text-slate-500">
+                Commençons par identifier votre véhicule
+              </p>
+            </div>
 
-      <p className="text-center text-xs text-slate-400">
-        En cliquant, vous acceptez nos conditions d&apos;utilisation.
-      </p>
-    </form>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Année du véhicule *
+                </label>
+                <select
+                  className="input-field !mb-0"
+                  {...register("annee", { required: "L'année est requise" })}
+                >
+                  <option value="">Sélectionnez l'année</option>
+                  {years.map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+                {errors.annee && (
+                  <p className="text-red-600 text-xs mt-1">{errors.annee.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Marque *
+                </label>
+                <select
+                  className="input-field !mb-0"
+                  {...register("marque", { required: "La marque est requise" })}
+                >
+                  <option value="">Sélectionnez la marque</option>
+                  {marques.map((marque) => (
+                    <option key={marque} value={marque}>
+                      {marque}
+                    </option>
+                  ))}
+                </select>
+                {errors.marque && (
+                  <p className="text-red-600 text-xs mt-1">{errors.marque.message}</p>
+                )}
+              </div>
+
+              {marqueValue === "Autre" && (
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">
+                    Précisez la marque *
+                  </label>
+                  <input
+                    className="input-field !mb-0"
+                    placeholder="Ex: Tesla, Rivian..."
+                    type="text"
+                    autoComplete="off"
+                    {...register("marque_autre", {
+                      required: marqueValue === "Autre" ? "Précisez la marque" : false
+                    })}
+                  />
+                  {errors.marque_autre && (
+                    <p className="text-red-600 text-xs mt-1">{errors.marque_autre.message}</p>
+                  )}
+                </div>
+              )}
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Modèle *
+                </label>
+                <input
+                  className="input-field !mb-0"
+                  placeholder="Ex: Civic, Corolla, F-150..."
+                  type="text"
+                  autoComplete="off"
+                  {...register("modele", { required: "Le modèle est requis" })}
+                />
+                {errors.modele && (
+                  <p className="text-red-600 text-xs mt-1">{errors.modele.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Compagnie d'assurance
+                  <span className="text-slate-400 ml-1">(optionnel)</span>
+                </label>
+                <input
+                  className="input-field !mb-0"
+                  placeholder="Ex: Desjardins, Intact..."
+                  type="text"
+                  autoComplete="off"
+                  {...register("assurance")}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 2: Damage Type */}
+        {currentStep === 2 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Zap className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">
+                Type de dommage
+              </h3>
+              <p className="text-sm text-slate-500">
+                Quel type de dommage avez-vous?
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
+              <button
+                type="button"
+                onClick={() => setDamageType("chip")}
+                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  damageType === "chip"
+                    ? "border-primary bg-primary/5"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                <div
+                  className={`p-3 rounded-lg shrink-0 ${
+                    damageType === "chip"
+                      ? "bg-primary text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  <CircleDot className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-slate-900 text-base mb-1">
+                    Éclat (Chip)
+                  </div>
+                  <div className="text-sm text-slate-500">
+                    Petit impact circulaire, généralement réparable
+                  </div>
+                </div>
+                {damageType === "chip" && (
+                  <Check className="w-5 h-5 text-primary shrink-0 mt-1" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDamageType("crack")}
+                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  damageType === "crack"
+                    ? "border-primary bg-primary/5"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                <div
+                  className={`p-3 rounded-lg shrink-0 ${
+                    damageType === "crack"
+                      ? "bg-primary text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  <Zap className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-slate-900 text-base mb-1">
+                    Fissure (Crack)
+                  </div>
+                  <div className="text-sm text-slate-500">
+                    Ligne de fissure, peut nécessiter un remplacement
+                  </div>
+                </div>
+                {damageType === "crack" && (
+                  <Check className="w-5 h-5 text-primary shrink-0 mt-1" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setDamageType("shattered")}
+                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  damageType === "shattered"
+                    ? "border-primary bg-primary/5"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+              >
+                <div
+                  className={`p-3 rounded-lg shrink-0 ${
+                    damageType === "shattered"
+                      ? "bg-primary text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  <Sparkles className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-slate-900 text-base mb-1">
+                    Brisé (Shattered)
+                  </div>
+                  <div className="text-sm text-slate-500">
+                    Pare-brise fortement endommagé, remplacement nécessaire
+                  </div>
+                </div>
+                {damageType === "shattered" && (
+                  <Check className="w-5 h-5 text-primary shrink-0 mt-1" />
+                )}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Step 3: Service Location */}
+        {currentStep === 3 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <MapPin className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">
+                Lieu d'intervention
+              </h3>
+              <p className="text-sm text-slate-500">
+                Où souhaitez-vous le service?
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-3">
+              <button
+                type="button"
+                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  typeService === "DOMICILE"
+                    ? "border-primary bg-primary/5"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+                onClick={() => setTypeService("DOMICILE")}
+              >
+                <div
+                  className={`p-3 rounded-lg shrink-0 ${
+                    typeService === "DOMICILE"
+                      ? "bg-primary text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  <Truck className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-slate-900 text-base mb-1">
+                    Service Mobile
+                  </div>
+                  <div className="text-sm text-slate-500">
+                    Nous venons à votre domicile, bureau ou autre lieu
+                  </div>
+                </div>
+                {typeService === "DOMICILE" && (
+                  <Check className="w-5 h-5 text-primary shrink-0 mt-1" />
+                )}
+              </button>
+
+              <button
+                type="button"
+                className={`flex items-start gap-4 p-4 rounded-xl border-2 transition-all text-left ${
+                  typeService === "ATELIER"
+                    ? "border-primary bg-primary/5"
+                    : "border-slate-200 bg-white hover:border-slate-300"
+                }`}
+                onClick={() => setTypeService("ATELIER")}
+              >
+                <div
+                  className={`p-3 rounded-lg shrink-0 ${
+                    typeService === "ATELIER"
+                      ? "bg-primary text-white"
+                      : "bg-slate-100 text-slate-600"
+                  }`}
+                >
+                  <Building2 className="h-6 w-6" />
+                </div>
+                <div className="flex-1">
+                  <div className="font-bold text-slate-900 text-base mb-1">
+                    À l'Atelier
+                  </div>
+                  <div className="text-sm text-slate-500">
+                    Vous venez à notre atelier à Montréal
+                  </div>
+                </div>
+                {typeService === "ATELIER" && (
+                  <Check className="w-5 h-5 text-primary shrink-0 mt-1" />
+                )}
+              </button>
+            </div>
+
+            {typeService === "DOMICILE" && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Adresse complète *
+                </label>
+                <div className="relative">
+                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    className="input-field pl-10 !mb-0"
+                    placeholder="123 Rue Exemple, Montréal, QC H1X 1X1"
+                    type="text"
+                    autoComplete="street-address"
+                    {...register("adresse_intervention", {
+                      required:
+                        typeService === "DOMICILE"
+                          ? "L'adresse est requise pour le service mobile"
+                          : false,
+                    })}
+                  />
+                </div>
+                {errors.adresse_intervention && (
+                  <p className="text-red-600 text-xs mt-1">
+                    {errors.adresse_intervention.message}
+                  </p>
+                )}
+              </div>
+            )}
+
+            {typeService === "ATELIER" && (
+              <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <p className="text-sm text-slate-700 font-semibold mb-1">
+                  Notre adresse
+                </p>
+                <p className="text-sm text-slate-600">
+                  123 Rue du Pare-Brise, Montréal, QC
+                </p>
+                <p className="text-xs text-slate-500 mt-2">
+                  Lun-Ven: 8h-17h | Sam: 9h-13h
+                </p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Step 4: Contact Information */}
+        {currentStep === 4 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <User className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">
+                Vos coordonnées
+              </h3>
+              <p className="text-sm text-slate-500">
+                Comment pouvons-nous vous contacter?
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Nom complet *
+                </label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    className="input-field pl-10 !mb-0"
+                    placeholder="Jean Dupont"
+                    type="text"
+                    autoComplete="name"
+                    {...register("client_nom", { required: "Le nom est requis" })}
+                  />
+                </div>
+                {errors.client_nom && (
+                  <p className="text-red-600 text-xs mt-1">{errors.client_nom.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Numéro de téléphone *
+                </label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    className="input-field pl-10 !mb-0"
+                    placeholder="514-555-1234"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    {...register("client_telephone", {
+                      required: "Le téléphone est requis",
+                      pattern: {
+                        value: /^[\d\s\-\+\(\)]+$/,
+                        message: "Numéro de téléphone invalide"
+                      }
+                    })}
+                  />
+                </div>
+                {errors.client_telephone && (
+                  <p className="text-red-600 text-xs mt-1">{errors.client_telephone.message}</p>
+                )}
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Email
+                  <span className="text-slate-400 ml-1">(optionnel)</span>
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    className="input-field pl-10 !mb-0"
+                    placeholder="jean@exemple.com"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    {...register("client_email", {
+                      pattern: {
+                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                        message: "Format d'email invalide"
+                      }
+                    })}
+                  />
+                </div>
+                {errors.client_email && (
+                  <p className="text-red-600 text-xs mt-1">{errors.client_email.message}</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Step 5: Date and Confirmation */}
+        {currentStep === 5 && (
+          <div className="space-y-4 animate-fadeIn">
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                <Calendar className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-1">
+                Date préférée
+              </h3>
+              <p className="text-sm text-slate-500">
+                Quand souhaitez-vous le service?
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Date souhaitée *
+                </label>
+                <div className="relative">
+                  <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                  <input
+                    className="input-field pl-10 !mb-0"
+                    type="date"
+                    min={minDate}
+                    {...register("date_souhaitee", { required: "La date est requise" })}
+                  />
+                </div>
+                {errors.date_souhaitee && (
+                  <p className="text-red-600 text-xs mt-1">{errors.date_souhaitee.message}</p>
+                )}
+                <p className="text-xs text-slate-500 mt-2">
+                  💡 Nous vous contacterons pour confirmer la disponibilité
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-slate-700 mb-1">
+                  Message supplémentaire
+                  <span className="text-slate-400 ml-1">(optionnel)</span>
+                </label>
+                <textarea
+                  className="input-field min-h-[100px] resize-none !mb-0"
+                  placeholder="Ajoutez des détails ou des instructions spéciales..."
+                  {...register("message")}
+                />
+              </div>
+
+              {/* Summary */}
+              <div className="mt-6 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                <h4 className="font-bold text-sm text-slate-700 mb-3">Résumé</h4>
+                <div className="space-y-2 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Véhicule:</span>
+                    <span className="font-medium text-slate-900">
+                      {anneeValue} {marqueValue === "Autre" ? watch("marque_autre") : marqueValue} {modeleValue}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Dommage:</span>
+                    <span className="font-medium text-slate-900">
+                      {damageType === "chip" ? "Éclat" : damageType === "crack" ? "Fissure" : "Brisé"}
+                    </span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Service:</span>
+                    <span className="font-medium text-slate-900">
+                      {typeService === "DOMICILE" ? "Mobile" : "Atelier"}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Navigation Buttons */}
+        <div className="flex gap-3 mt-6">
+          {currentStep > 1 && (
+            <button
+              type="button"
+              onClick={prevStep}
+              className="flex-1 h-12 border-2 border-slate-300 text-slate-700 font-semibold rounded-xl hover:bg-slate-50 transition-colors flex items-center justify-center gap-2"
+            >
+              <ChevronLeft className="w-5 h-5" />
+              Précédent
+            </button>
+          )}
+
+          {currentStep < totalSteps ? (
+            <button
+              type="button"
+              onClick={nextStep}
+              className="flex-1 h-12 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+            >
+              Suivant
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="flex-1 h-12 bg-emerald-600 text-white font-semibold rounded-xl hover:bg-emerald-700 transition-colors flex items-center justify-center gap-2"
+              disabled={loading}
+            >
+              {loading ? (
+                "Envoi en cours..."
+              ) : (
+                <>
+                  Confirmer le rendez-vous
+                  <Check className="w-5 h-5" />
+                </>
+              )}
+            </button>
+          )}
+        </div>
+
+        {currentStep === totalSteps && (
+          <p className="text-center text-xs text-slate-400 mt-3">
+            En cliquant, vous acceptez nos conditions d&apos;utilisation
+          </p>
+        )}
+      </form>
+    </div>
   );
 }
