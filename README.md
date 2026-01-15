@@ -82,7 +82,7 @@ Votre clé Supabase `NEXT_PUBLIC_SUPABASE_ANON_KEY` doit être configurée corre
 
 1. **Récupérer la vraie clé :**
    ```
-   https://supabase.com/dashboard/project/mnjrloqjkpdktkptzjum/settings/api
+votre url key 
    ```
 
 2. **Mettre à jour `.env.local` ligne 5**
