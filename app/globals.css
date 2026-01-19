@@ -128,3 +128,100 @@ select.input-field {
   background-size: 200% 200%;
   animation: gradient 4s ease infinite;
 }
+
+/* Native CSS Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hero animations - immediate on load */
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.delay-200 {
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.delay-400 {
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+/* Scroll-triggered animations using CSS animation-timeline */
+@supports (animation-timeline: view()) {
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(30px);
+    animation: fadeInUp 0.6s ease-out forwards;
+    animation-timeline: view();
+    animation-range: entry 0% entry 30%;
+  }
+}
+
+/* Fallback for browsers without animation-timeline support */
+@supports not (animation-timeline: view()) {
+  .scroll-animate {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Google Places Autocomplete Dropdown Styling */
+.pac-container {
+  @apply bg-white rounded-lg shadow-lg border border-slate-200 mt-1;
+  font-family: "Inter", sans-serif;
+  z-index: 9999 !important;
+}
+
+.pac-item {
+  @apply px-4 py-3 cursor-pointer border-b border-slate-100 text-sm;
+}
+
+.pac-item:last-child {
+  @apply border-b-0;
+}
+
+.pac-item:hover {
+  @apply bg-slate-50;
+}
+
+.pac-item-selected {
+  @apply bg-primary/5;
+}
+
+.pac-icon {
+  @apply hidden;
+}
+
+.pac-item-query {
+  @apply font-medium text-slate-900;
+}
+
+.pac-matched {
+  @apply font-bold text-primary;
+}
+
+/* Mobile-friendly sizing */
+@media (max-width: 640px) {
+  .pac-container {
+    width: calc(100vw - 2rem) !important;
+    left: 1rem !important;
+  }
+
+  .pac-item {
+    @apply py-4 text-base;
+  }
+}
+
+.pac-container::after {
+  display: none !important;
+}

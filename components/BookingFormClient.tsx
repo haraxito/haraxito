@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import AddressAutocomplete from "./AddressAutocomplete";
 import {
   Building2,
   Truck,
@@ -31,6 +32,7 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
     watch,
     trigger,
@@ -492,26 +494,23 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
                 <label className="block text-sm font-medium text-slate-700 mb-1">
                   Adresse complète *
                 </label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
-                  <input
-                    className="input-field pl-10 !mb-0"
-                    placeholder="123 Rue Exemple, Montréal, QC H1X 1X1"
-                    type="text"
-                    autoComplete="street-address"
-                    {...register("adresse_intervention", {
-                      required:
-                        typeService === "DOMICILE"
-                          ? "L'adresse est requise pour le service mobile"
-                          : false,
-                    })}
-                  />
-                </div>
-                {errors.adresse_intervention && (
-                  <p className="text-red-600 text-xs mt-1">
-                    {errors.adresse_intervention.message}
-                  </p>
-                )}
+                <Controller
+                  name="adresse_intervention"
+                  control={control}
+                  rules={{
+                    required: typeService === "DOMICILE"
+                      ? "L'adresse est requise pour le service mobile"
+                      : false,
+                  }}
+                  render={({ field }) => (
+                    <AddressAutocomplete
+                      value={field.value || ""}
+                      onChange={(address) => field.onChange(address)}
+                      onBlur={field.onBlur}
+                      error={errors.adresse_intervention?.message}
+                    />
+                  )}
+                />
               </div>
             )}
 
