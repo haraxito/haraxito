@@ -33,7 +33,6 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
   const {
     register,
     handleSubmit,
-    reset,
     control,
     formState: { errors },
     watch,
@@ -149,11 +148,6 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
       });
 
       router.push(`/confirmation?${params.toString()}`);
-
-      reset();
-      setCurrentStep(1);
-      setTypeService("DOMICILE");
-      setDamageType("crack");
     } catch (err: any) {
       console.error("Form submission error:", err);
       setMessage({
