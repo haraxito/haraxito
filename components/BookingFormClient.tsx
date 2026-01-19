@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { useForm, Controller } from "react-hook-form";
 import AddressAutocomplete from "./AddressAutocomplete";
 import {
@@ -28,6 +29,7 @@ type BookingFormClientProps = {
 };
 
 export default function BookingFormClient({ marques, years, minDate }: BookingFormClientProps) {
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -136,10 +138,18 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
         );
       }
 
-      setMessage({
-        type: "success",
-        text: "✓ Votre demande a été enregistrée ! Un email de confirmation vous a été envoyé.",
+      // Redirect to confirmation page with booking details
+      const vehiculeDisplay = `${marque} ${values.modele} ${values.annee}`;
+      const params = new URLSearchParams({
+        nom: values.client_nom,
+        adresse: typeService === "DOMICILE" ? (values.adresse_intervention || "") : "",
+        date: values.date_souhaitee,
+        type: typeService,
+        vehicule: vehiculeDisplay,
       });
+
+      router.push(`/confirmation?${params.toString()}`);
+
       reset();
       setCurrentStep(1);
       setTypeService("DOMICILE");

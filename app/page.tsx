@@ -31,13 +31,13 @@ export default function HomePage() {
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-gradient-to-br from-primary/20 via-blue-400/10 to-transparent rounded-full blur-3xl -z-10"></div>
         <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-72 h-72 bg-gradient-to-tr from-emerald-400/10 via-primary/10 to-transparent rounded-full blur-3xl -z-10"></div>
 
-        <h1 className="text-slate-900 text-4xl md:text-5xl font-black leading-tight tracking-tight mb-4 relative">
+        <h1 className="animate-fade-in-up text-slate-900 text-4xl md:text-5xl font-black leading-tight tracking-tight mb-4 relative">
           Remplacement de <br />
           <span className="bg-gradient-to-r from-primary via-blue-600 to-primary bg-clip-text text-transparent animate-gradient">
             Pare-Brise Rapide
           </span>
         </h1>
-        <p className="text-slate-600 text-lg md:text-xl font-medium leading-relaxed mb-8 max-w-lg">
+        <p className="animate-fade-in-up delay-200 text-slate-600 text-lg md:text-xl font-medium leading-relaxed mb-8 max-w-lg">
           On se déplace chez vous. Prenez rendez-vous gratuitement en quelques
           minutes.
         </p>
@@ -92,7 +92,7 @@ export default function HomePage() {
         </h3>
         <div className="grid grid-cols-1 gap-4">
           {/* Trust Item 1 */}
-          <div className="group flex items-center p-5 bg-gradient-to-br from-white to-blue-50/30 rounded-2xl border border-blue-100 shadow-lg shadow-blue-100/50 hover:shadow-xl hover:shadow-blue-200/50 transition-all duration-300 hover:-translate-y-1">
+          <div className="scroll-animate group flex items-center p-5 bg-gradient-to-br from-white to-blue-50/30 rounded-2xl border border-blue-100 shadow-lg shadow-blue-100/50 hover:shadow-xl hover:shadow-blue-200/50 transition-all duration-300 hover:-translate-y-1">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform">
               <Shield className="w-7 h-7" />
             </div>
@@ -110,7 +110,7 @@ export default function HomePage() {
           <AdBannerInFeed adSlot="3333333333" />
 
           {/* Trust Item 2 */}
-          <div className="group flex items-center p-5 bg-gradient-to-br from-white to-emerald-50/30 rounded-2xl border border-emerald-100 shadow-lg shadow-emerald-100/50 hover:shadow-xl hover:shadow-emerald-200/50 transition-all duration-300 hover:-translate-y-1">
+          <div className="scroll-animate group flex items-center p-5 bg-gradient-to-br from-white to-emerald-50/30 rounded-2xl border border-emerald-100 shadow-lg shadow-emerald-100/50 hover:shadow-xl hover:shadow-emerald-200/50 transition-all duration-300 hover:-translate-y-1">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition-transform">
               <Wrench className="w-7 h-7" />
             </div>
@@ -125,7 +125,7 @@ export default function HomePage() {
           </div>
 
           {/* Trust Item 3 */}
-          <div className="group flex items-center p-5 bg-gradient-to-br from-white to-amber-50/30 rounded-2xl border border-amber-100 shadow-lg shadow-amber-100/50 hover:shadow-xl hover:shadow-amber-200/50 transition-all duration-300 hover:-translate-y-1">
+          <div className="scroll-animate group flex items-center p-5 bg-gradient-to-br from-white to-amber-50/30 rounded-2xl border border-amber-100 shadow-lg shadow-amber-100/50 hover:shadow-xl hover:shadow-amber-200/50 transition-all duration-300 hover:-translate-y-1">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shrink-0 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
               <Award className="w-7 h-7" />
             </div>
@@ -145,12 +145,12 @@ export default function HomePage() {
       <AdBannerInterstitial adSlot="4444444444" />
 
       {/* Services Section - NEW */}
-      <section className="px-5">
+      <section className="mt-8 px-5">
         <h3 className="text-slate-800 font-black text-2xl mb-6 text-center">
           Nos Services
         </h3>
         <div className="grid grid-cols-2 gap-4">
-          <div className="group p-5 bg-gradient-to-br from-white to-blue-50/40 rounded-2xl border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
+          <div className="scroll-animate group p-5 bg-gradient-to-br from-white to-blue-50/40 rounded-2xl border border-blue-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white mx-auto mb-3 shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform">
               <Shield className="w-7 h-7" />
             </div>
@@ -159,7 +159,7 @@ export default function HomePage() {
               Pare-brise complet
             </p>
           </div>
-          <div className="group p-5 bg-gradient-to-br from-white to-emerald-50/40 rounded-2xl border border-emerald-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
+          <div className="scroll-animate group p-5 bg-gradient-to-br from-white to-emerald-50/40 rounded-2xl border border-emerald-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white mx-auto mb-3 shadow-lg shadow-emerald-500/30 group-hover:scale-110 transition-transform">
               <Wrench className="w-7 h-7" />
             </div>
@@ -168,14 +168,14 @@ export default function HomePage() {
               Éclats et fissures
             </p>
           </div>
-          <div className="group p-5 bg-gradient-to-br from-white to-amber-50/40 rounded-2xl border border-amber-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
+          <div className="scroll-animate group p-5 bg-gradient-to-br from-white to-amber-50/40 rounded-2xl border border-amber-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white mx-auto mb-3 shadow-lg shadow-amber-500/30 group-hover:scale-110 transition-transform">
               <Clock className="w-7 h-7" />
             </div>
             <h4 className="text-slate-900 font-bold text-sm mb-1">Service rapide</h4>
             <p className="text-slate-600 text-xs leading-relaxed">En 1 heure</p>
           </div>
-          <div className="group p-5 bg-gradient-to-br from-white to-purple-50/40 rounded-2xl border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
+          <div className="scroll-animate group p-5 bg-gradient-to-br from-white to-purple-50/40 rounded-2xl border border-purple-100 shadow-lg hover:shadow-xl transition-all duration-300 text-center hover:-translate-y-1 cursor-pointer">
             <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white mx-auto mb-3 shadow-lg shadow-purple-500/30 group-hover:scale-110 transition-transform">
               <MapPin className="w-7 h-7" />
             </div>
@@ -196,7 +196,7 @@ export default function HomePage() {
           Avis de nos clients
         </h3>
         <div className="space-y-4">
-          <div className="relative p-6 bg-gradient-to-br from-white via-amber-50/30 to-white rounded-2xl border border-amber-100 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="scroll-animate relative p-6 bg-gradient-to-br from-white via-amber-50/30 to-white rounded-2xl border border-amber-100 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-500 rounded-full flex items-center justify-center text-white shadow-lg">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
@@ -225,7 +225,7 @@ export default function HomePage() {
           {/* In-Feed Ad - Between Testimonials */}
           <AdBannerInFeed adSlot="6666666666" />
 
-          <div className="relative p-6 bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl border border-emerald-100 shadow-lg hover:shadow-xl transition-all duration-300">
+          <div className="scroll-animate relative p-6 bg-gradient-to-br from-white via-emerald-50/30 to-white rounded-2xl border border-emerald-100 shadow-lg hover:shadow-xl transition-all duration-300">
             <div className="absolute -top-3 -left-3 w-12 h-12 bg-gradient-to-br from-emerald-400 to-emerald-500 rounded-full flex items-center justify-center text-white shadow-lg">
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
@@ -289,7 +289,7 @@ export default function HomePage() {
           Questions fréquentes
         </h3>
         <div className="space-y-4">
-          <div className="group p-5 bg-white rounded-2xl border-2 border-slate-100 hover:border-primary/30 shadow-md hover:shadow-lg transition-all duration-300">
+          <div className="scroll-animate group p-5 bg-white rounded-2xl border-2 border-slate-100 hover:border-primary/30 shadow-md hover:shadow-lg transition-all duration-300">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-md group-hover:scale-110 transition-transform">
                 ?
@@ -304,7 +304,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="group p-5 bg-white rounded-2xl border-2 border-slate-100 hover:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300">
+          <div className="scroll-animate group p-5 bg-white rounded-2xl border-2 border-slate-100 hover:border-emerald-500/30 shadow-md hover:shadow-lg transition-all duration-300">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-md group-hover:scale-110 transition-transform">
                 ?
@@ -319,7 +319,7 @@ export default function HomePage() {
               </div>
             </div>
           </div>
-          <div className="group p-5 bg-white rounded-2xl border-2 border-slate-100 hover:border-purple-500/30 shadow-md hover:shadow-lg transition-all duration-300">
+          <div className="scroll-animate group p-5 bg-white rounded-2xl border-2 border-slate-100 hover:border-purple-500/30 shadow-md hover:shadow-lg transition-all duration-300">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-md group-hover:scale-110 transition-transform">
                 ?

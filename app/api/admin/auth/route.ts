@@ -1,14 +1,22 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-// Admin password - Change this! Or set ADMIN_PASSWORD env variable
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "parebrise2026";
+// Admin password - Must be set via ADMIN_PASSWORD environment variable
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 
 // Session duration: 24 hours
 const SESSION_DURATION = 24 * 60 * 60 * 1000;
 
 export async function POST(request: Request) {
   try {
+    if (!ADMIN_PASSWORD) {
+      console.error("ADMIN_PASSWORD environment variable is not set");
+      return NextResponse.json(
+        { error: "Configuration serveur incomplète" },
+        { status: 500 }
+      );
+    }
+
     const { password } = await request.json();
 
     if (!password) {

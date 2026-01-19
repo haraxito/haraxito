@@ -5,6 +5,7 @@ import {
   isSupabaseConfigured,
 } from "@/lib/supabaseClient";
 import { sendBookingEmails, isResendConfigured } from "@/lib/resend";
+import { sendToN8n } from "../webhook/n8n/route";
 
 // Validate environment on module load
 const isEnvValid = envValidation.valid;
@@ -89,6 +90,28 @@ export async function POST(request: Request) {
         { status: 500 }
       );
     }
+
+    // Send webhook to n8n (non-blocking, fire-and-forget)
+    sendToN8n({
+      event: "new_booking",
+      timestamp: new Date().toISOString(),
+      data: {
+        id: booking.id,
+        clientName: nom,
+        clientEmail: email,
+        clientPhone: telephone,
+        vehicleInfo: vehicule,
+        serviceType: typeService,
+        address: adresse,
+        preferredDate: preferredDate,
+        message: message,
+        status: "Nouveau",
+      },
+      metadata: {
+        source: "parebrise-instant",
+        version: "1.0",
+      },
+    }).catch(console.error);
 
     // Send confirmation emails via Resend (non-blocking)
     if (isResendConfigured()) {

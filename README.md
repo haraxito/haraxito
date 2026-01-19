@@ -82,7 +82,7 @@ Votre clé Supabase `NEXT_PUBLIC_SUPABASE_ANON_KEY` doit être configurée corre
 
 1. **Récupérer la vraie clé :**
    ```
-votre url key 
+   https://supabase.com/dashboard/project/YOUR_PROJECT_ID/settings/api
    ```
 
 2. **Mettre à jour `.env.local` ligne 5**
@@ -227,7 +227,7 @@ vercel logs              # Voir les logs
 |----------|-------------|--------|
 | `ADMIN_EMAIL` | Email admin | - |
 | `RESEND_FROM_EMAIL` | Email expéditeur | - |
-| `ADMIN_PASSWORD` | Mot de passe admin | `parebrise2026` |
+| `ADMIN_PASSWORD` | Mot de passe admin | (définir en production) |
 
 ---
 

@@ -150,7 +150,7 @@ try {
     const anonKey = envVars['NEXT_PUBLIC_SUPABASE_ANON_KEY'];
     if (!anonKey || anonKey.includes('VOTRE_') || anonKey.split('.').length !== 3) {
       console.log('\n1. RÉCUPÉRER LA VRAIE CLÉ ANON KEY:');
-      console.log('   - Aller sur https://supabase.com/dashboard/project/mnjrloqjkpdktkptzjum/settings/api');
+      console.log('   - Aller sur https://supabase.com/dashboard/project/YOUR_PROJECT_ID/settings/api');
       console.log('   - Copier la "anon public" key');
       console.log('   - Remplacer NEXT_PUBLIC_SUPABASE_ANON_KEY dans .env.local');
     }

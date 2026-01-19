@@ -93,7 +93,7 @@ Pour vos questions :
 3. VÉRIFIER MES CLÉS API
 -------------------------
 
-Mon URL Supabase est : https://mnjrloqjkpdktkptzjum.supabase.co
+Mon URL Supabase est : https://YOUR_PROJECT_ID.supabase.co
 
 Pouvez-vous me confirmer mes clés API actuelles ?
 
