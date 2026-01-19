@@ -21,6 +21,7 @@ import {
   Check,
 } from "lucide-react";
 import type { FormValues, TypeService, DamageType } from "@/lib/constants";
+import type { ParsedAddress } from "@/types/google-maps";
 
 type BookingFormClientProps = {
   marques: readonly string[];
@@ -46,6 +47,7 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
     type: "success" | "error";
     text: string;
   } | null>(null);
+  const [parsedAddress, setParsedAddress] = useState<ParsedAddress | null>(null);
 
   const totalSteps = 5;
 
@@ -123,6 +125,14 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
           typeService: typeService,
           adresse:
             typeService === "DOMICILE" ? values.adresse_intervention : null,
+          adresseDetails: typeService === "DOMICILE" && parsedAddress ? {
+            ville: parsedAddress.city,
+            province: parsedAddress.province,
+            codePostal: parsedAddress.postalCode,
+            latitude: parsedAddress.latitude,
+            longitude: parsedAddress.longitude,
+            placeId: parsedAddress.placeId,
+          } : null,
           message: values.message || null,
           damageType: damageType,
           preferredDate: values.date_souhaitee,
@@ -509,7 +519,12 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
                   render={({ field }) => (
                     <AddressAutocomplete
                       value={field.value || ""}
-                      onChange={(address) => field.onChange(address)}
+                      onChange={(address, parsed) => {
+                        field.onChange(address);
+                        if (parsed) {
+                          setParsedAddress(parsed);
+                        }
+                      }}
                       onBlur={field.onBlur}
                       error={errors.adresse_intervention?.message}
                     />

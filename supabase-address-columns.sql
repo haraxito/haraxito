@@ -1,0 +1,30 @@
+-- Script SQL pour ajouter les colonnes d'adresse détaillées à la table rendez_vous
+-- Exécutez ce script dans l'éditeur SQL de Supabase
+
+-- Ajouter les colonnes pour stocker les détails de l'adresse
+ALTER TABLE rendez_vous
+ADD COLUMN IF NOT EXISTS adresse_ville TEXT,
+ADD COLUMN IF NOT EXISTS adresse_province TEXT,
+ADD COLUMN IF NOT EXISTS adresse_code_postal TEXT,
+ADD COLUMN IF NOT EXISTS adresse_latitude DECIMAL(10, 8),
+ADD COLUMN IF NOT EXISTS adresse_longitude DECIMAL(11, 8),
+ADD COLUMN IF NOT EXISTS adresse_place_id TEXT;
+
+-- Ajouter un commentaire pour documenter les colonnes
+COMMENT ON COLUMN rendez_vous.adresse_ville IS 'Ville extraite de Google Places (ex: Montréal)';
+COMMENT ON COLUMN rendez_vous.adresse_province IS 'Province/État extrait de Google Places (ex: QC)';
+COMMENT ON COLUMN rendez_vous.adresse_code_postal IS 'Code postal extrait de Google Places';
+COMMENT ON COLUMN rendez_vous.adresse_latitude IS 'Latitude GPS pour géolocalisation';
+COMMENT ON COLUMN rendez_vous.adresse_longitude IS 'Longitude GPS pour géolocalisation';
+COMMENT ON COLUMN rendez_vous.adresse_place_id IS 'ID unique Google Places pour référence';
+
+-- Créer un index pour les recherches géographiques (optionnel mais recommandé)
+CREATE INDEX IF NOT EXISTS idx_rendez_vous_ville ON rendez_vous(adresse_ville);
+CREATE INDEX IF NOT EXISTS idx_rendez_vous_code_postal ON rendez_vous(adresse_code_postal);
+
+-- Vérifier que les colonnes ont été ajoutées
+SELECT column_name, data_type, is_nullable
+FROM information_schema.columns
+WHERE table_name = 'rendez_vous'
+AND column_name LIKE 'adresse_%'
+ORDER BY ordinal_position;
