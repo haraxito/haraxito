@@ -48,6 +48,7 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
     text: string;
   } | null>(null);
   const [parsedAddress, setParsedAddress] = useState<ParsedAddress | null>(null);
+  const [isAddressValid, setIsAddressValid] = useState(false);
 
   const totalSteps = 5;
 
@@ -74,6 +75,14 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
       case 3:
         if (typeService === "DOMICILE") {
           fieldsToValidate = ["adresse_intervention"];
+          // Vérifier que l'adresse a été sélectionnée depuis l'autocomplete
+          if (!isAddressValid) {
+            setMessage({
+              type: "error",
+              text: "Veuillez sélectionner une adresse dans la liste déroulante Google Maps",
+            });
+            return;
+          }
         }
         break;
       case 4:
@@ -83,6 +92,9 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
         fieldsToValidate = ["date_souhaitee"];
         break;
     }
+
+    // Effacer le message d'erreur si on passe à l'étape suivante
+    setMessage(null);
 
     const isValid = await trigger(fieldsToValidate);
     if (isValid && currentStep < totalSteps) {
@@ -523,9 +535,19 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
                         field.onChange(address);
                         if (parsed) {
                           setParsedAddress(parsed);
+                        } else {
+                          // Si pas de parsed, invalider l'adresse
+                          setParsedAddress(null);
                         }
                       }}
                       onBlur={field.onBlur}
+                      onValidationChange={(isValid) => {
+                        setIsAddressValid(isValid);
+                        // Effacer le message d'erreur si l'adresse devient valide
+                        if (isValid && message?.text.includes("adresse")) {
+                          setMessage(null);
+                        }
+                      }}
                       error={errors.adresse_intervention?.message}
                     />
                   )}

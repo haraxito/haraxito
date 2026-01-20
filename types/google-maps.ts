@@ -16,6 +16,7 @@ export interface AddressAutocompleteProps {
   value: string;
   onChange: (address: string, parsedAddress?: ParsedAddress) => void;
   onBlur?: () => void;
+  onValidationChange?: (isValid: boolean) => void;
   placeholder?: string;
   error?: string;
   disabled?: boolean;

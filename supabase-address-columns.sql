@@ -28,3 +28,40 @@ FROM information_schema.columns
 WHERE table_name = 'rendez_vous'
 AND column_name LIKE 'adresse_%'
 ORDER BY ordinal_position;
+
+<script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+    window.SUPABASE_URL || "YOUR_SUPABASE_URL",
+    window.SUPABASE_ANON_KEY || "YOUR_SUPABASE_ANON_KEY"
+    );
+
+    async function updateAdresseIntegration(formattedAddress) {
+    const { error } = await supabase
+        .from('rendez_vous')
+        .update({ adresse_integration: formattedAddress })
+        .eq('adresse_intervention', 'rU-QYR761CnPJNpOTRuVj3oRXCk=');
+
+    if (error) {
+        console.error('Erreur update:', error);
+        alert('Erreur lors de la mise à jour de l’adresse.');
+    } else {
+        console.log('Adresse intégrée mise à jour.');
+    }
+    }
+
+  // Hook sur votre place-picker existant
+    document.addEventListener('DOMContentLoaded', async () => {
+    await customElements.whenDefined('gmp-map');
+    const placePicker = document.querySelector('gmpx-place-picker');
+
+    placePicker.addEventListener('gmpx-placechange', () => {
+        const place = placePicker.value;
+        if (!place?.location) return;
+
+        const formatted = place.formattedAddress ?? place.displayName;
+        updateAdresseIntegration(formatted);
+    });
+    });
+</script>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import { MapPin, Loader2 } from "lucide-react";
+import { MapPin, Loader2, CheckCircle2 } from "lucide-react";
 import { useGoogleMapsLoader } from "@/hooks/useGoogleMapsLoader";
 import type { ParsedAddress, AddressAutocompleteProps } from "@/types/google-maps";
 
@@ -9,6 +9,7 @@ export default function AddressAutocomplete({
   value,
   onChange,
   onBlur,
+  onValidationChange,
   placeholder = "123 Rue Exemple, Montréal, QC H1X 1X1",
   error,
   disabled = false,
@@ -18,6 +19,8 @@ export default function AddressAutocomplete({
   const inputRef = useRef<HTMLInputElement>(null);
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
   const [inputValue, setInputValue] = useState(value);
+  const [isValidSelection, setIsValidSelection] = useState(false);
+  const lastValidAddressRef = useRef<string>("");
 
   const parseAddressComponents = useCallback(
     (place: google.maps.places.PlaceResult): ParsedAddress => {
@@ -82,6 +85,9 @@ export default function AddressAutocomplete({
       if (place && place.formatted_address) {
         const parsedAddress = parseAddressComponents(place);
         setInputValue(place.formatted_address);
+        lastValidAddressRef.current = place.formatted_address;
+        setIsValidSelection(true);
+        onValidationChange?.(true);
         onChange(place.formatted_address, parsedAddress);
       }
     });
@@ -103,6 +109,14 @@ export default function AddressAutocomplete({
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
+
+    // Si l'utilisateur modifie l'adresse après avoir sélectionné une option,
+    // invalider la sélection pour forcer une nouvelle sélection
+    if (newValue !== lastValidAddressRef.current) {
+      setIsValidSelection(false);
+      onValidationChange?.(false);
+    }
+
     onChange(newValue);
   };
 
@@ -133,6 +147,9 @@ export default function AddressAutocomplete({
       {!isLoaded && (
         <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 animate-spin" />
       )}
+      {isLoaded && isValidSelection && (
+        <CheckCircle2 className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-emerald-500" />
+      )}
       <input
         ref={inputRef}
         type="text"
@@ -141,10 +158,15 @@ export default function AddressAutocomplete({
         onBlur={onBlur}
         placeholder={placeholder}
         disabled={disabled || !isLoaded}
-        className={`input-field pl-10 !mb-0 ${className}`}
+        className={`input-field pl-10 pr-10 !mb-0 ${isValidSelection ? "border-emerald-300 focus:border-emerald-500" : ""} ${className}`}
         autoComplete="off"
       />
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
+      {!error && !isValidSelection && inputValue && inputValue.length > 0 && (
+        <p className="text-amber-600 text-xs mt-1">
+          Sélectionnez une adresse dans la liste déroulante
+        </p>
+      )}
     </div>
   );
 }
