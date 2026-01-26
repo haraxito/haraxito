@@ -117,7 +117,9 @@ export default function AddressAutocomplete({
       onValidationChange?.(false);
     }
 
-    onChange(newValue);
+    // NE PAS appeler onChange() ici avec le texte brut de l'utilisateur
+    // onChange() sera appelé UNIQUEMENT lors de la sélection d'une adresse depuis Google Places
+    // Cela garantit que seules les adresses formatées par Google sont sauvegardées
   };
 
   if (loadError) {

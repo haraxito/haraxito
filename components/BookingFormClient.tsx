@@ -115,6 +115,16 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
     setMessage(null);
 
     try {
+      // Validation finale: pour le service à domicile, vérifier qu'une adresse Google valide a été sélectionnée
+      if (typeService === "DOMICILE" && !isAddressValid) {
+        setMessage({
+          type: "error",
+          text: "Veuillez sélectionner une adresse valide dans la liste déroulante Google Maps",
+        });
+        setLoading(false);
+        return;
+      }
+
       // Si "Autre" est sélectionné, utiliser marque_autre
       const marque = values.marque === "Autre" ? values.marque_autre : values.marque;
 
