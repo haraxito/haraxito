@@ -571,7 +571,7 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
                   Notre adresse
                 </p>
                 <p className="text-sm text-slate-600">
-                  123 Rue du Pare-Brise, Montréal, QC
+                  1195 A Rue de Royan, Laval, QC H7N 6E7
                 </p>
                 <p className="text-xs text-slate-500 mt-2">
                   Lun-Ven: 8h-17h | Sam: 9h-13h

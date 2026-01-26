@@ -140,7 +140,7 @@ function ConfirmationContent() {
                     {typeService === "DOMICILE" ? "À domicile" : "En atelier"}
                   </p>
                   <p className="text-slate-600 text-sm font-medium">
-                    {typeService === "DOMICILE" ? adresse : "123 Rue du Pare-Brise, Montréal, QC"}
+                    {typeService === "DOMICILE" ? adresse : "1195 A Rue de Royan, Laval, QC H7N 6E7"}
                   </p>
                 </div>
               </div>
