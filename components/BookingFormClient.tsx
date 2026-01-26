@@ -147,22 +147,14 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
           typeService: typeService,
           adresse:
             typeService === "DOMICILE" ? values.adresse_intervention : null,
-          adresseDetails: (() => {
-            // Logging pour vérifier les données avant envoi
-            console.log("📍 Données d'adresse envoyées:", {
-              adresse: typeService === "DOMICILE" ? values.adresse_intervention : null,
-              parsedAddress: parsedAddress,
-              isAddressValid: isAddressValid
-            });
-            return typeService === "DOMICILE" && parsedAddress ? {
-              ville: parsedAddress.city,
-              province: parsedAddress.province,
-              codePostal: parsedAddress.postalCode,
-              latitude: parsedAddress.latitude,
-              longitude: parsedAddress.longitude,
-              placeId: parsedAddress.placeId,
-            } : null;
-          })(),
+          adresseDetails: typeService === "DOMICILE" && parsedAddress ? {
+            ville: parsedAddress.city,
+            province: parsedAddress.province,
+            codePostal: parsedAddress.postalCode,
+            latitude: parsedAddress.latitude,
+            longitude: parsedAddress.longitude,
+            placeId: parsedAddress.placeId,
+          } : null,
           message: values.message || null,
           damageType: damageType,
           preferredDate: values.date_souhaitee,
