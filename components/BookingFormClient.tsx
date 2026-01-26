@@ -147,14 +147,22 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
           typeService: typeService,
           adresse:
             typeService === "DOMICILE" ? values.adresse_intervention : null,
-          adresseDetails: typeService === "DOMICILE" && parsedAddress ? {
-            ville: parsedAddress.city,
-            province: parsedAddress.province,
-            codePostal: parsedAddress.postalCode,
-            latitude: parsedAddress.latitude,
-            longitude: parsedAddress.longitude,
-            placeId: parsedAddress.placeId,
-          } : null,
+          adresseDetails: (() => {
+            // Logging pour vérifier les données avant envoi
+            console.log("📍 Données d'adresse envoyées:", {
+              adresse: typeService === "DOMICILE" ? values.adresse_intervention : null,
+              parsedAddress: parsedAddress,
+              isAddressValid: isAddressValid
+            });
+            return typeService === "DOMICILE" && parsedAddress ? {
+              ville: parsedAddress.city,
+              province: parsedAddress.province,
+              codePostal: parsedAddress.postalCode,
+              latitude: parsedAddress.latitude,
+              longitude: parsedAddress.longitude,
+              placeId: parsedAddress.placeId,
+            } : null;
+          })(),
           message: values.message || null,
           damageType: damageType,
           preferredDate: values.date_souhaitee,
@@ -765,7 +773,12 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
             <button
               type="button"
               onClick={nextStep}
-              className="flex-1 h-12 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+              disabled={currentStep === 3 && typeService === "DOMICILE" && !isAddressValid}
+              className={`flex-1 h-12 font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 ${
+                currentStep === 3 && typeService === "DOMICILE" && !isAddressValid
+                  ? "bg-slate-300 text-slate-500 cursor-not-allowed"
+                  : "bg-primary text-white hover:bg-primary/90"
+              }`}
             >
               Suivant
               <ChevronRight className="w-5 h-5" />

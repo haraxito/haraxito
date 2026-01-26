@@ -160,13 +160,19 @@ export default function AddressAutocomplete({
         onBlur={onBlur}
         placeholder={placeholder}
         disabled={disabled || !isLoaded}
-        className={`input-field pl-10 pr-10 !mb-0 ${isValidSelection ? "border-emerald-300 focus:border-emerald-500" : ""} ${className}`}
+        className={`input-field pl-10 pr-10 !mb-0 ${
+          isValidSelection
+            ? "border-emerald-300 focus:border-emerald-500"
+            : inputValue && inputValue.length > 0
+              ? "border-red-300 focus:border-red-500"
+              : ""
+        } ${className}`}
         autoComplete="off"
       />
       {error && <p className="text-red-600 text-xs mt-1">{error}</p>}
       {!error && !isValidSelection && inputValue && inputValue.length > 0 && (
-        <p className="text-amber-600 text-xs mt-1">
-          Sélectionnez une adresse dans la liste déroulante
+        <p className="text-red-600 text-sm mt-1 font-semibold">
+          ⚠️ Veuillez sélectionner une adresse dans la liste déroulante
         </p>
       )}
     </div>
