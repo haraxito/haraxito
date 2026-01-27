@@ -22,6 +22,17 @@ export default function AddressAutocomplete({
   const [isValidSelection, setIsValidSelection] = useState(false);
   const lastValidAddressRef = useRef<string>("");
 
+  // Refs pour stabiliser les callbacks et éviter la recréation du listener
+  const onChangeRef = useRef(onChange);
+  const onValidationChangeRef = useRef(onValidationChange);
+  const isSelectingRef = useRef(false);
+
+  // Synchroniser les refs à chaque rendu
+  useEffect(() => {
+    onChangeRef.current = onChange;
+    onValidationChangeRef.current = onValidationChange;
+  }, [onChange, onValidationChange]);
+
   const parseAddressComponents = useCallback(
     (place: google.maps.places.PlaceResult): ParsedAddress => {
       const components = place.address_components || [];
@@ -87,8 +98,9 @@ export default function AddressAutocomplete({
         setInputValue(place.formatted_address);
         lastValidAddressRef.current = place.formatted_address;
         setIsValidSelection(true);
-        onValidationChange?.(true);
-        onChange(place.formatted_address, parsedAddress);
+        // Utiliser les refs pour garantir les versions les plus récentes des callbacks
+        onValidationChangeRef.current?.(true);
+        onChangeRef.current(place.formatted_address, parsedAddress);
       }
     });
 
@@ -100,7 +112,35 @@ export default function AddressAutocomplete({
         autocompleteRef.current = null;
       }
     };
-  }, [isLoaded, onChange, parseAddressComponents]);
+  }, [isLoaded, parseAddressComponents]); // onChange retiré - utilise onChangeRef à la place
+
+  // Gestion du mousedown/mouseup pour éviter le conflit blur/click
+  // Quand l'utilisateur clique sur une suggestion, on empêche le blur de fermer le dropdown prématurément
+  useEffect(() => {
+    const handleMouseDown = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('.pac-container')) {
+        isSelectingRef.current = true;
+        // Empêcher le blur de l'input pendant la sélection
+        e.preventDefault();
+      }
+    };
+
+    const handleMouseUp = () => {
+      // Réinitialiser le flag après un court délai pour laisser le temps au place_changed de se déclencher
+      setTimeout(() => {
+        isSelectingRef.current = false;
+      }, 100);
+    };
+
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   useEffect(() => {
     setInputValue(value);
