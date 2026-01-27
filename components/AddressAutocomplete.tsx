@@ -114,33 +114,39 @@ export default function AddressAutocomplete({
     };
   }, [isLoaded, parseAddressComponents]); // onChange retiré - utilise onChangeRef à la place
 
-  // Gestion du mousedown/mouseup pour éviter le conflit blur/click
-  // Quand l'utilisateur clique sur une suggestion, on empêche le blur de fermer le dropdown prématurément
+  // Gestion du mousedown/touchstart pour détecter quand l'utilisateur clique sur une suggestion
   useEffect(() => {
-    const handleMouseDown = (e: MouseEvent) => {
+    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
       const target = e.target as HTMLElement;
       if (target.closest('.pac-container')) {
         isSelectingRef.current = true;
-        // Empêcher le blur de l'input pendant la sélection
-        e.preventDefault();
+        // Réinitialiser après un délai pour laisser le temps à place_changed de se déclencher
+        setTimeout(() => {
+          isSelectingRef.current = false;
+        }, 300);
       }
     };
 
-    const handleMouseUp = () => {
-      // Réinitialiser le flag après un court délai pour laisser le temps au place_changed de se déclencher
-      setTimeout(() => {
-        isSelectingRef.current = false;
-      }, 100);
-    };
-
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseup', handleMouseUp);
+    document.addEventListener('mousedown', handlePointerDown);
+    document.addEventListener('touchstart', handlePointerDown);
 
     return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
+      document.removeEventListener('mousedown', handlePointerDown);
+      document.removeEventListener('touchstart', handlePointerDown);
     };
   }, []);
+
+  // Gestionnaire de blur personnalisé qui refocalise l'input si on est en train de sélectionner
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+    if (isSelectingRef.current) {
+      // Refocaliser l'input après un court délai pour permettre au clic de se terminer
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 10);
+      return; // Ne pas appeler onBlur pendant la sélection
+    }
+    onBlur?.(e);
+  };
 
   useEffect(() => {
     setInputValue(value);
@@ -197,7 +203,7 @@ export default function AddressAutocomplete({
         type="text"
         value={inputValue}
         onChange={handleInputChange}
-        onBlur={onBlur}
+        onBlur={handleBlur}
         placeholder={placeholder}
         disabled={disabled || !isLoaded}
         className={`input-field pl-10 pr-10 !mb-0 ${
