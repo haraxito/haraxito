@@ -566,16 +566,20 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
             )}
 
             {typeService === "ATELIER" && (
-              <div className="mt-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
-                <p className="text-sm text-slate-700 font-semibold mb-1">
-                  Notre adresse
-                </p>
-                <p className="text-sm text-slate-600">
-                  1195 A Rue de Royan, Laval, QC H7N 6E7
-                </p>
-                <p className="text-xs text-slate-500 mt-2">
-                  Lun-Ven: 8h-17h | Sam: 9h-13h
-                </p>
+              <div className="mt-4 w-full bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="p-5 flex flex-col gap-2">
+                  <h2 className="text-slate-700 font-bold text-lg leading-tight">
+                    Notre adresse
+                  </h2>
+                  <p className="text-slate-600 text-base font-normal">
+                    1195 Rue de Royan, Laval, QC H7N 6E7
+                  </p>
+                  <div className="flex items-center gap-2 text-slate-500 text-sm mt-1">
+                    <span>Lun-Ven: 8h-17h</span>
+                    <span className="w-[1px] h-3 bg-slate-300"></span>
+                    <span>Sam: 9h-13h</span>
+                  </div>
+                </div>
               </div>
             )}
           </div>
