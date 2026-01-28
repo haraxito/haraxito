@@ -25,7 +25,6 @@ export default function AddressAutocomplete({
   // Refs pour stabiliser les callbacks et éviter la recréation du listener
   const onChangeRef = useRef(onChange);
   const onValidationChangeRef = useRef(onValidationChange);
-  const isSelectingRef = useRef(false);
 
   // Synchroniser les refs à chaque rendu
   useEffect(() => {
@@ -114,39 +113,47 @@ export default function AddressAutocomplete({
     };
   }, [isLoaded, parseAddressComponents]); // onChange retiré - utilise onChangeRef à la place
 
-  // Gestion du mousedown/touchstart pour détecter quand l'utilisateur clique sur une suggestion
+  // Injecter les styles pour pac-container (dropdown Google Places)
   useEffect(() => {
-    const handlePointerDown = (e: MouseEvent | TouchEvent) => {
-      const target = e.target as HTMLElement;
-      if (target.closest('.pac-container')) {
-        isSelectingRef.current = true;
-        // Réinitialiser après un délai pour laisser le temps à place_changed de se déclencher
-        setTimeout(() => {
-          isSelectingRef.current = false;
-        }, 300);
+    const style = document.createElement('style');
+    style.id = 'pac-container-styles';
+    style.textContent = `
+      .pac-container {
+        z-index: 10000 !important;
       }
-    };
-
-    document.addEventListener('mousedown', handlePointerDown);
-    document.addEventListener('touchstart', handlePointerDown);
+      .pac-item {
+        cursor: pointer;
+      }
+    `;
+    document.head.appendChild(style);
 
     return () => {
-      document.removeEventListener('mousedown', handlePointerDown);
-      document.removeEventListener('touchstart', handlePointerDown);
+      const existingStyle = document.getElementById('pac-container-styles');
+      if (existingStyle) {
+        document.head.removeChild(existingStyle);
+      }
     };
   }, []);
 
-  // Gestionnaire de blur personnalisé qui refocalise l'input si on est en train de sélectionner
-  const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
-    if (isSelectingRef.current) {
-      // Refocaliser l'input après un court délai pour permettre au clic de se terminer
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 10);
-      return; // Ne pas appeler onBlur pendant la sélection
-    }
-    onBlur?.(e);
-  };
+  // MutationObserver pour intercepter le pac-container et empêcher le blur lors du clic
+  useEffect(() => {
+    const observer = new MutationObserver(() => {
+      const pacContainer = document.querySelector('.pac-container');
+      if (pacContainer && !pacContainer.hasAttribute('data-handled')) {
+        pacContainer.setAttribute('data-handled', 'true');
+
+        // Empêcher le blur quand on clique sur une suggestion
+        // Le preventDefault sur mousedown empêche l'input de perdre le focus
+        pacContainer.addEventListener('mousedown', (e) => {
+          e.preventDefault();
+        });
+      }
+    });
+
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     setInputValue(value);
@@ -203,7 +210,7 @@ export default function AddressAutocomplete({
         type="text"
         value={inputValue}
         onChange={handleInputChange}
-        onBlur={handleBlur}
+        onBlur={onBlur}
         placeholder={placeholder}
         disabled={disabled || !isLoaded}
         className={`input-field pl-10 pr-10 !mb-0 ${

@@ -5,7 +5,7 @@ import {
   isSupabaseConfigured,
 } from "@/lib/supabaseClient";
 import { sendBookingEmails, isResendConfigured } from "@/lib/resend";
-import { sendToN8n } from "../webhook/n8n/route";
+import { sendToN8n } from "@/lib/n8n";
 
 // Validate environment on module load
 const isEnvValid = envValidation.valid;
