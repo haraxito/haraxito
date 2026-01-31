@@ -13,6 +13,7 @@ import {
   Phone,
   Pencil,
   Wrench,
+  Shield,
 } from "lucide-react";
 import Link from "next/link";
 import LogoutButton from "./LogoutButton";
@@ -76,6 +77,7 @@ export default async function AdminPage() {
       <div className="sticky top-0 z-40 bg-primary text-white shadow-md -mx-4 md:-mx-0">
         <div className="flex items-center justify-between px-4 py-3 max-w-4xl mx-auto">
           <div className="flex items-center gap-3">
+            <Shield className="w-6 h-6" />
             <h1 className="text-xl font-bold tracking-tight">
               Parebrise Instant
             </h1>
