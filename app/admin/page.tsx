@@ -84,19 +84,19 @@ export default async function AdminPage() {
           </div>
           <div className="flex items-center gap-2">
             <Link
+              href="/admin"
+              className="flex items-center justify-center p-2 rounded-full hover:bg-white/10"
+              title="Rafraîchir"
+            >
+              <RefreshCw className="w-5 h-5" />
+            </Link>
+            <Link
               href="/technicien"
               className="flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500 hover:bg-emerald-600 transition text-sm font-medium"
               title="Espace Technicien"
             >
               <Wrench className="w-4 h-4" />
               <span className="hidden sm:inline">Technicien</span>
-            </Link>
-            <Link
-              href="/admin"
-              className="flex items-center justify-center p-2 rounded-full hover:bg-white/10"
-              title="Rafraîchir"
-            >
-              <RefreshCw className="w-5 h-5" />
             </Link>
             <LogoutButton />
           </div>
