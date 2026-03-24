@@ -39,7 +39,7 @@ export async function GET(request: Request) {
 
     // Construction de la requête Supabase
     let query = supabaseAdmin()
-      .from("rendez_vous")
+      .from("commandes_pieces")
       .select("*")
       .order("created_at", { ascending: false });
 
@@ -49,11 +49,11 @@ export async function GET(request: Request) {
     }
 
     if (typeFilter) {
-      query = query.eq("type_service", typeFilter);
+      query = query.eq("urgence", typeFilter);
     }
 
     if (dateFilter) {
-      query = query.eq("date_souhaitee", dateFilter);
+      query = query.gte("created_at", dateFilter).lt("created_at", dateFilter + "T23:59:59");
     }
 
     if (limitFilter) {
@@ -81,19 +81,15 @@ export async function GET(request: Request) {
     // Calculer les statistiques
     const stats = {
       total: data.length,
-      nouveaux: data.filter((r) => r.statut === "Nouveau").length,
-      confirmes: data.filter((r) => r.statut === "Confirmé").length,
-      domicile: data.filter((r) => r.type_service === "DOMICILE").length,
-      atelier: data.filter((r) => r.type_service === "ATELIER").length,
+      nouvelles: data.filter((r) => r.statut === "Nouvelle").length,
+      confirmees: data.filter((r) => r.statut === "Confirmée").length,
+      en_route: data.filter((r) => r.statut === "En route").length,
+      critiques: data.filter((r) => r.urgence === "critique").length,
+      urgentes: data.filter((r) => r.urgence === "urgent").length,
     };
 
     return NextResponse.json(
-      {
-        success: true,
-        data,
-        stats,
-        count: data.length,
-      },
+      { success: true, data, stats, count: data.length },
       { status: 200 }
     );
   } catch (error) {
