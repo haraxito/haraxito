@@ -118,6 +118,7 @@ const STEPS = [
 export default function CommandeForm() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [stepDirection, setStepDirection] = useState<"forward" | "back">("forward");
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [loading, setLoading] = useState(false);
@@ -152,9 +153,15 @@ export default function CommandeForm() {
   };
 
   const next = () => {
-    if (validateStep()) setStep((s) => Math.min(s + 1, 5));
+    if (validateStep()) {
+      setStepDirection("forward");
+      setStep((s) => Math.min(s + 1, 5));
+    }
   };
-  const prev = () => setStep((s) => Math.max(s - 1, 1));
+  const prev = () => {
+    setStepDirection("back");
+    setStep((s) => Math.max(s - 1, 1));
+  };
 
   const submit = async () => {
     setLoading(true);
@@ -179,24 +186,25 @@ export default function CommandeForm() {
   const progress = ((step - 1) / (STEPS.length - 1)) * 100;
 
   return (
-    <Card className="w-full max-w-2xl mx-auto border-0 shadow-2xl">
+    <Card className="w-full max-w-2xl mx-auto border-0 shadow-2xl rounded-3xl overflow-hidden">
       {/* Steps header */}
-      <div className="px-6 pt-6 pb-4 border-b border-slate-100">
-        <div className="flex justify-between items-center mb-3">
+      <div className="px-6 pt-6 pb-4 border-b border-slate-100 bg-gradient-to-b from-slate-50/80 to-white">
+        <div className="flex justify-between items-center mb-4">
           {STEPS.map((s) => {
             const Icon = s.icon;
             const active = step === s.id;
             const done = step > s.id;
             return (
-              <div key={s.id} className="flex flex-col items-center gap-1">
+              <div key={s.id} className="flex flex-col items-center gap-1.5">
                 <div
-                  className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-all ${
+                  className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-300 ${
                     done
-                      ? "bg-green-500 border-green-500 text-white"
+                      ? "bg-gradient-to-br from-emerald-400 to-emerald-600 text-white shadow-md shadow-emerald-500/25"
                       : active
-                      ? "bg-orange-500 border-orange-500 text-white"
-                      : "border-slate-200 text-slate-400 bg-white"
+                      ? "bg-gradient-to-br from-orange-400 to-orange-600 text-white shadow-md shadow-orange-500/30"
+                      : "border-2 border-slate-200 text-slate-300 bg-white"
                   }`}
+                  style={active ? { transform: "scale(1.1)" } : undefined}
                 >
                   {done ? (
                     <CheckCircle2 className="w-4 h-4" />
@@ -205,8 +213,8 @@ export default function CommandeForm() {
                   )}
                 </div>
                 <span
-                  className={`text-xs font-medium hidden sm:block ${
-                    active ? "text-orange-600" : done ? "text-green-600" : "text-slate-400"
+                  className={`text-xs font-semibold hidden sm:block transition-colors duration-200 ${
+                    active ? "text-orange-600" : done ? "text-emerald-600" : "text-slate-300"
                   }`}
                 >
                   {s.label}
@@ -215,13 +223,18 @@ export default function CommandeForm() {
             );
           })}
         </div>
-        <Progress value={progress} className="h-1.5" />
+        <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-orange-400 to-orange-500 rounded-full transition-all duration-500 ease-out-quart"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
       <CardContent className="p-6">
         {/* ÉTAPE 1 — Infos garage */}
         {step === 1 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className={`space-y-4 ${stepDirection === "forward" ? "step-enter" : "step-enter-back"}`}>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Votre garage</h2>
               <p className="text-sm text-slate-500 mt-0.5">
@@ -325,7 +338,7 @@ export default function CommandeForm() {
 
         {/* ÉTAPE 2 — Véhicule */}
         {step === 2 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className={`space-y-4 ${stepDirection === "forward" ? "step-enter" : "step-enter-back"}`}>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Le véhicule</h2>
               <p className="text-sm text-slate-500 mt-0.5">
@@ -411,7 +424,7 @@ export default function CommandeForm() {
 
         {/* ÉTAPE 3 — Pièces */}
         {step === 3 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className={`space-y-4 ${stepDirection === "forward" ? "step-enter" : "step-enter-back"}`}>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Pièces requises</h2>
               <p className="text-sm text-slate-500 mt-0.5">
@@ -476,7 +489,7 @@ export default function CommandeForm() {
 
         {/* ÉTAPE 4 — Urgence */}
         {step === 4 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className={`space-y-4 ${stepDirection === "forward" ? "step-enter" : "step-enter-back"}`}>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Niveau d&apos;urgence</h2>
               <p className="text-sm text-slate-500 mt-0.5">
@@ -530,7 +543,7 @@ export default function CommandeForm() {
 
         {/* ÉTAPE 5 — Récapitulatif */}
         {step === 5 && (
-          <div className="space-y-4 animate-fadeIn">
+          <div className={`space-y-4 ${stepDirection === "forward" ? "step-enter" : "step-enter-back"}`}>
             <div>
               <h2 className="text-xl font-bold text-slate-900">Récapitulatif</h2>
               <p className="text-sm text-slate-500 mt-0.5">
@@ -611,7 +624,7 @@ export default function CommandeForm() {
             <Button
               type="button"
               variant="outline"
-              className="flex-1"
+              className="flex-1 rounded-xl border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 active:scale-95 transition-all duration-200 h-12"
               onClick={prev}
               disabled={loading}
             >
@@ -621,7 +634,7 @@ export default function CommandeForm() {
           {step < 5 ? (
             <Button
               type="button"
-              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold"
+              className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white font-bold rounded-xl shadow-md shadow-orange-500/25 active:scale-95 transition-all duration-200 h-12"
               onClick={next}
             >
               Suivant <ChevronRight className="w-4 h-4 ml-1" />
@@ -629,7 +642,7 @@ export default function CommandeForm() {
           ) : (
             <Button
               type="button"
-              className="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold text-base py-5"
+              className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-red-600 text-white font-bold text-base rounded-xl shadow-lg shadow-orange-500/30 active:scale-95 transition-all duration-200 h-14"
               onClick={submit}
               disabled={loading}
             >

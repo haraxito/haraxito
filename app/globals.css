@@ -15,11 +15,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* ── Timing functions ── */
+:root {
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-in-out-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ── Mobile touch improvements ── */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, a, [role="button"] {
+  touch-action: manipulation;
+}
+
 /* Glass header effect */
 .glass-header {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px) saturate(1.8);
+  -webkit-backdrop-filter: blur(16px) saturate(1.8);
+  border-bottom: 1px solid rgba(234, 88, 12, 0.08);
 }
 
 /* Hide scrollbar for horizontal scroll */
@@ -37,15 +54,15 @@ body {
 }
 
 .card {
-  @apply rounded-xl border border-gray-200 bg-white shadow-sm;
+  @apply rounded-2xl border border-slate-100 bg-white shadow-sm;
 }
 
 .btn-primary {
-  @apply inline-flex items-center justify-center rounded-lg bg-primary text-white hover:bg-primary-dark px-4 py-2 font-medium transition-colors;
+  @apply inline-flex items-center justify-center rounded-xl bg-primary text-white hover:bg-primary-dark px-4 py-2 font-semibold transition-all active:scale-95;
 }
 
 .btn-emerald {
-  @apply inline-flex items-center justify-center rounded-xl bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-500/30 transition-all;
+  @apply inline-flex items-center justify-center rounded-xl bg-emerald-500 hover:bg-emerald-600 active:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-500/30 transition-all active:scale-95;
 }
 
 .badge {
@@ -53,24 +70,27 @@ body {
 }
 
 .badge-green {
-  @apply bg-green-100 text-green-800;
+  @apply bg-emerald-50 text-emerald-700 border border-emerald-200;
 }
 
 .badge-blue {
-  @apply bg-blue-100 text-blue-800;
+  @apply bg-sky-50 text-sky-700 border border-sky-200;
 }
 
 .badge-yellow {
-  @apply bg-yellow-100 text-yellow-800;
+  @apply bg-amber-50 text-amber-700 border border-amber-200;
 }
 
 /* Form inputs */
 .input-field {
-  @apply w-full h-14 px-4 py-3 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-primary focus:border-transparent transition-all text-base font-medium leading-tight;
+  @apply w-full h-14 px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 placeholder-slate-400 focus:ring-2 focus:ring-primary/50 focus:border-primary/60 transition-all text-base font-medium leading-tight;
+  transition-duration: 200ms;
+  transition-timing-function: var(--ease-out-quart);
 }
 
 .input-field:focus {
-  @apply bg-white border-primary shadow-md shadow-primary/10;
+  @apply bg-white shadow-lg shadow-primary/8;
+  transform: translateY(-1px);
 }
 
 /* Textarea specific styling */
@@ -91,14 +111,16 @@ select.input-field {
 
 /* Trust badge */
 .trust-badge {
-  @apply inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 rounded-full border border-blue-100 text-primary text-xs font-semibold;
+  @apply inline-flex items-center gap-1.5 px-3 py-1.5 bg-orange-50 rounded-full border border-orange-100 text-orange-700 text-xs font-semibold;
 }
 
-/* Animations */
+/* ── Animations ── */
+
+/* Fade in basique */
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(10px);
+    transform: translateY(8px);
   }
   to {
     opacity: 1;
@@ -107,9 +129,10 @@ select.input-field {
 }
 
 .animate-fadeIn {
-  animation: fadeIn 0.3s ease-out;
+  animation: fadeIn 0.25s var(--ease-out-quart) both;
 }
 
+/* Gradient animé */
 @keyframes gradient {
   0%, 100% {
     background-position: 0% 50%;
@@ -121,14 +144,14 @@ select.input-field {
 
 .animate-gradient {
   background-size: 200% 200%;
-  animation: gradient 4s ease infinite;
+  animation: gradient 5s ease infinite;
 }
 
-/* Native CSS Animations */
+/* Hero — slide + fade up */
 @keyframes fadeInUp {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(24px);
   }
   to {
     opacity: 1;
@@ -136,33 +159,110 @@ select.input-field {
   }
 }
 
-/* Hero animations - immediate on load */
 .animate-fade-in-up {
-  animation: fadeInUp 0.8s ease-out forwards;
+  animation: fadeInUp 0.7s var(--ease-out-quart) both;
 }
 
 .delay-200 {
-  animation-delay: 0.2s;
+  animation-delay: 0.18s;
   opacity: 0;
 }
 
 .delay-400 {
-  animation-delay: 0.4s;
+  animation-delay: 0.36s;
   opacity: 0;
 }
 
-/* Scroll-triggered animations using CSS animation-timeline */
-@supports (animation-timeline: view()) {
-  .scroll-animate {
+/* ── Transitions entre étapes du formulaire ── */
+
+@keyframes slideInRight {
+  from {
     opacity: 0;
-    transform: translateY(30px);
-    animation: fadeInUp 0.6s ease-out forwards;
-    animation-timeline: view();
-    animation-range: entry 0% entry 30%;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
 
-/* Fallback for browsers without animation-timeline support */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.step-enter {
+  animation: slideInRight 0.3s var(--ease-spring) both;
+}
+
+.step-enter-back {
+  animation: slideInLeft 0.3s var(--ease-spring) both;
+}
+
+/* ── Shimmer (loading skeleton) ── */
+@keyframes shimmer {
+  from {
+    background-position: -200% 0;
+  }
+  to {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(241, 245, 249, 1) 25%,
+    rgba(226, 232, 240, 0.8) 50%,
+    rgba(241, 245, 249, 1) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ── Float animation pour les bulles hero ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) scale(1); }
+  50% { transform: translateY(-12px) scale(1.04); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+.animate-float-slow {
+  animation: float 9s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* ── Pulse ring (badge live) ── */
+@keyframes pulseRing {
+  0% { box-shadow: 0 0 0 0 rgba(234, 88, 12, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(234, 88, 12, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(234, 88, 12, 0); }
+}
+
+.animate-pulse-ring {
+  animation: pulseRing 1.8s ease-out infinite;
+}
+
+/* ── Scroll-triggered animations ── */
+@supports (animation-timeline: view()) {
+  .scroll-animate {
+    opacity: 0;
+    transform: translateY(24px);
+    animation: fadeInUp 0.6s var(--ease-out-quart) both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 28%;
+  }
+}
+
 @supports not (animation-timeline: view()) {
   .scroll-animate {
     opacity: 1;
@@ -170,15 +270,33 @@ select.input-field {
   }
 }
 
-/* Google Places Autocomplete Dropdown Styling */
+/* ── Boutons — press effect mobile ── */
+.btn-press {
+  transition: transform 120ms var(--ease-spring), box-shadow 120ms ease;
+}
+.btn-press:active {
+  transform: scale(0.96);
+}
+
+/* ── Cards interactifs ── */
+.card-lift {
+  transition: transform 220ms var(--ease-out-quart), box-shadow 220ms var(--ease-out-quart);
+}
+.card-lift:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px -6px rgba(234, 88, 12, 0.12), 0 4px 12px -4px rgba(0,0,0,0.06);
+}
+
+/* ── Google Places Autocomplete ── */
 .pac-container {
-  @apply bg-white rounded-lg shadow-lg border border-slate-200 mt-1;
+  @apply bg-white rounded-2xl shadow-xl border border-slate-100 mt-2;
   font-family: "Inter", sans-serif;
   z-index: 9999 !important;
+  overflow: hidden;
 }
 
 .pac-item {
-  @apply px-4 py-3 cursor-pointer border-b border-slate-100 text-sm;
+  @apply px-4 py-3 cursor-pointer border-b border-slate-50 text-sm transition-colors duration-150;
 }
 
 .pac-item:last-child {
@@ -186,11 +304,11 @@ select.input-field {
 }
 
 .pac-item:hover {
-  @apply bg-slate-50;
+  @apply bg-orange-50;
 }
 
 .pac-item-selected {
-  @apply bg-primary/5;
+  @apply bg-orange-50;
 }
 
 .pac-icon {
@@ -198,14 +316,13 @@ select.input-field {
 }
 
 .pac-item-query {
-  @apply font-medium text-slate-900;
+  @apply font-semibold text-slate-900;
 }
 
 .pac-matched {
-  @apply font-bold text-primary;
+  @apply font-bold text-orange-500;
 }
 
-/* Mobile-friendly sizing */
 @media (max-width: 640px) {
   .pac-container {
     width: calc(100vw - 2rem) !important;
@@ -221,7 +338,7 @@ select.input-field {
   display: none !important;
 }
 
-/* Material Symbols */
+/* ── Material Symbols ── */
 .material-symbols-outlined {
   font-family: 'Material Symbols Outlined', sans-serif;
   font-weight: normal;
@@ -239,6 +356,7 @@ select.input-field {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ── Design tokens (oklch) ── */
 @layer base {
   .theme {
     --font-heading: var(--font-sans);
@@ -263,12 +381,7 @@ select.input-field {
     --border: oklch(0.922 0 0);
     --input: oklch(0.922 0 0);
     --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
-    --radius: 0.625rem;
+    --radius: 0.75rem;
     --sidebar: oklch(0.985 0 0);
     --sidebar-foreground: oklch(0.145 0 0);
     --sidebar-primary: oklch(0.205 0 0);
@@ -297,11 +410,6 @@ select.input-field {
     --border: oklch(1 0 0 / 10%);
     --input: oklch(1 0 0 / 15%);
     --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.87 0 0);
-    --chart-2: oklch(0.556 0 0);
-    --chart-3: oklch(0.439 0 0);
-    --chart-4: oklch(0.371 0 0);
-    --chart-5: oklch(0.269 0 0);
     --sidebar: oklch(0.205 0 0);
     --sidebar-foreground: oklch(0.985 0 0);
     --sidebar-primary: oklch(0.488 0.243 264.376);
