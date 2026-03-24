@@ -4,6 +4,10 @@ import { Phone, Car } from "lucide-react";
 import Link from "next/link";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 export const metadata: Metadata = {
   title: "Parebrise Instant - Remplacement de pare-brise",
@@ -17,7 +21,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fr">
+    <html lang="fr" className={cn("font-sans", geist.variable)}>
       <head>
         {/* Google Fonts - Inter */}
         <link
