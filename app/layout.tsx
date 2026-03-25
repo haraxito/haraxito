@@ -22,24 +22,25 @@ export default function RootLayout({
       </head>
       <body className="bg-background-light text-slate-900 antialiased overflow-x-hidden">
         {/* Header */}
-        <header className="glass-header sticky top-0 z-50 w-full border-b border-slate-200 shadow-sm">
+        <header className="glass-header sticky top-0 z-50 w-full border-b border-orange-100/60 shadow-sm shadow-orange-500/5">
           <div className="flex items-center justify-between px-4 h-16 max-w-4xl mx-auto">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white shadow-md shadow-orange-500/30">
+            <Link href="/" className="flex items-center gap-2 group">
+              <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white shadow-md shadow-orange-500/30 group-hover:shadow-orange-500/50 transition-shadow">
                 <Zap className="w-5 h-5" />
               </div>
               <div>
                 <span className="text-orange-600 text-lg font-bold tracking-tight leading-none">
                   PièceFlash
                 </span>
-                <span className="text-slate-500 text-xs block leading-none font-medium">
+                <span className="text-slate-500 text-xs block leading-none font-medium flex items-center gap-1">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
                   Grand Montréal
                 </span>
               </div>
             </Link>
             <a
               href="tel:+15147544607"
-              className="flex items-center justify-center bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white px-4 py-2 rounded-full transition-colors shadow-md shadow-orange-500/20"
+              className="flex items-center justify-center bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white px-4 py-2 rounded-full transition-all shadow-md shadow-orange-500/20 hover:shadow-lg hover:shadow-orange-500/30 hover:scale-105"
             >
               <Phone className="w-4 h-4 mr-1.5 fill-current" />
               <span className="text-sm font-bold">514-754-4607</span>

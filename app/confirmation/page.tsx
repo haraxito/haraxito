@@ -4,14 +4,24 @@ import { Button } from "@/components/ui/button";
 
 export default function ConfirmationPage() {
   return (
-    <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4 py-12">
-      <div className="max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 to-white flex items-center justify-center px-4 py-12 relative overflow-hidden">
+      {/* Background blobs */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-24 -right-24 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
+        <div className="absolute top-32 -left-16 w-64 h-64 bg-red-500/5 rounded-full blur-2xl" />
+      </div>
+
+      <div className="relative max-w-md w-full bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden animate-fade-in-up">
         {/* Header orange */}
         <div className="bg-gradient-to-br from-orange-500 to-red-500 p-8 text-center text-white">
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
             <CheckCircle2 className="w-9 h-9" />
           </div>
-          <h1 className="text-2xl font-extrabold mb-1">Commande reçue!</h1>
+          <h1 className="text-2xl font-extrabold mb-1">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-orange-100 animate-gradient">
+              Commande reçue!
+            </span>
+          </h1>
           <p className="text-orange-100 text-sm">
             Notre équipe s&apos;en occupe maintenant
           </p>
@@ -19,6 +29,11 @@ export default function ConfirmationPage() {
 
         {/* Content */}
         <div className="p-6 flex flex-col gap-4">
+          <div className="inline-flex items-center gap-2 bg-orange-100 border border-orange-200 text-orange-700 rounded-full px-4 py-1.5 text-sm font-semibold self-center">
+            <span className="inline-block w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
+            Traitement en cours
+          </div>
+
           <div className="rounded-xl bg-orange-50 border border-orange-100 p-4 flex gap-3">
             <Zap className="w-5 h-5 text-orange-500 shrink-0 mt-0.5" />
             <div>
@@ -47,13 +62,13 @@ export default function ConfirmationPage() {
 
           <div className="pt-2 flex flex-col gap-3">
             <a href="tel:+15147544607">
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-5">
+              <Button className="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold py-5 shadow-md shadow-orange-500/30 transition-all">
                 <Phone className="w-4 h-4 mr-2 fill-current" />
                 Appeler le 514-754-4607
               </Button>
             </a>
             <Link href="/">
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full hover:border-orange-200 hover:text-orange-600 transition-colors">
                 Passer une nouvelle commande
               </Button>
             </Link>

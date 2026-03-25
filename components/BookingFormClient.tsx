@@ -180,11 +180,11 @@ export default function BookingFormClient({ marques, years, minDate }: BookingFo
       });
 
       router.push(`/confirmation?${params.toString()}`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Form submission error:", err);
       setMessage({
         type: "error",
-        text: err?.message ?? "Une erreur est survenue. Réessayez plus tard.",
+        text: err instanceof Error ? err.message : "Une erreur est survenue. Réessayez plus tard.",
       });
     } finally {
       setLoading(false);
