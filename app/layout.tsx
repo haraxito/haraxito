@@ -22,14 +22,14 @@ export default function RootLayout({
       </head>
       <body className="bg-background-light text-slate-900 antialiased overflow-x-hidden">
         {/* Header */}
-        <header className="glass-header sticky top-0 z-50 w-full border-b border-orange-100/60 shadow-sm shadow-orange-500/5">
+        <header className="glass-header sticky top-0 z-50 w-full border-b border-orange-200/50 shadow-sm shadow-orange-500/10">
           <div className="flex items-center justify-between px-4 h-16 max-w-4xl mx-auto">
             <Link href="/" className="flex items-center gap-2 group">
               <div className="w-9 h-9 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center text-white shadow-md shadow-orange-500/30 group-hover:shadow-orange-500/50 transition-shadow">
                 <Zap className="w-5 h-5" />
               </div>
               <div>
-                <span className="text-orange-600 text-lg font-bold tracking-tight leading-none">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-red-500 animate-gradient text-lg font-bold tracking-tight leading-none">
                   PièceFlash
                 </span>
                 <span className="text-slate-500 text-xs block leading-none font-medium flex items-center gap-1">
