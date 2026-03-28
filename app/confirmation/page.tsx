@@ -9,12 +9,13 @@ export default function ConfirmationPage() {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute -top-24 -right-24 w-96 h-96 bg-orange-500/10 rounded-full blur-3xl" />
         <div className="absolute top-32 -left-16 w-64 h-64 bg-red-500/5 rounded-full blur-2xl" />
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-80 h-40 bg-orange-500/5 rounded-full blur-3xl" />
       </div>
 
       <div className="relative max-w-md w-full bg-white rounded-2xl shadow-xl shadow-orange-500/10 border border-orange-100/60 overflow-hidden animate-fade-in-up">
         {/* Header orange */}
         <div className="bg-gradient-to-br from-orange-500 to-red-500 p-8 text-center text-white">
-          <div className="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
+          <div className="w-16 h-16 bg-white/20 ring-4 ring-white/30 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse">
             <CheckCircle2 className="w-9 h-9" />
           </div>
           <h1 className="text-2xl font-extrabold mb-1">
